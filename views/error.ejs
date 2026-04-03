@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> — GROW.AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="error-page">
+  <div class="bg-gradient"></div>
+
+  <div class="container">
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <h1><%= title %></h1>
+      <p class="error-message"><%= message %></p>
+      <% if (details) { %>
+        <pre class="error-details"><%= details %></pre>
+      <% } %>
+      <a href="/" class="btn-analyze">
+        <span class="btn-text">Try Again</span>
+        <span class="btn-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

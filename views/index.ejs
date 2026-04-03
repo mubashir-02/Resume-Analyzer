@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GROW.AI — Upload your resume and get AI-powered job matching with skill analysis and career recommendations.">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="upload-page">
+
+  <!-- Animated background -->
+  <div class="bg-gradient"></div>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="hero-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="12" fill="url(#logoGrad)"/>
+            <path d="M12 28V18L20 12L28 18V28H23V22H17V28H12Z" fill="white" fill-opacity="0.95"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">GROW<span class="logo-dot">.AI</span></span>
+      </div>
+      <p class="hero-badge">AI-Powered Career Intelligence</p>
+    </header>
+
+    <!-- Main upload section -->
+    <main class="upload-section">
+      <h1 class="hero-title">
+        Analyze Your Resume<br>
+        <span class="gradient-text">Find Your Perfect Job</span>
+      </h1>
+      <p class="hero-subtitle">
+        Upload your resume and let our AI extract your skills, match you with top jobs, 
+        and show you exactly where you stand — all in seconds.
+      </p>
+
+      <div class="upload-card" id="upload-card">
+        <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+          
+          <!-- Drop zone -->
+          <div class="drop-zone" id="drop-zone">
+            <div class="drop-zone-icon">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                <rect x="8" y="8" width="48" height="48" rx="16" stroke="url(#uploadGrad)" stroke-width="2" stroke-dasharray="6 4"/>
+                <path d="M32 22V42M32 22L24 30M32 22L40 30" stroke="url(#uploadGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="uploadGrad" x1="8" y1="8" x2="56" y2="56">
+                    <stop stop-color="#6366f1"/>
+                    <stop offset="1" stop-color="#a855f7"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <p class="drop-zone-text">Drag & drop your resume here</p>
+            <p class="drop-zone-hint">or click to browse • PDF only • Max 10MB</p>
+            <input type="file" name="resume" id="resume-input" accept=".pdf,application/pdf" required hidden>
+          </div>
+
+          <!-- Selected file display -->
+          <div class="file-selected" id="file-selected" style="display: none;">
+            <div class="file-info">
+              <div class="file-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444" stroke-width="1.5"/>
+                  <path d="M14 2V8H20" stroke="#ef4444" stroke-width="1.5"/>
+                  <text x="12" y="17" text-anchor="middle" fill="#ef4444" font-size="6" font-weight="700">PDF</text>
+                </svg>
+              </div>
+              <div class="file-details">
+                <span class="file-name" id="file-name">resume.pdf</span>
+                <span class="file-size" id="file-size">0 KB</span>
+              </div>
+            </div>
+            <button type="button" class="file-remove" id="file-remove" title="Remove file">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn-analyze" id="btn-analyze" disabled>
+            <span class="btn-text">Analyze My Resume</span>
+            <span class="btn-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+        <div class="feature-item">
+          <div class="feature-icon">🧠</div>
+          <h3>AI Skill Extraction</h3>
+          <p>Gemini AI identifies your skills and experience level</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔍</div>
+          <h3>Smart Job Matching</h3>
+          <p>Finds relevant jobs and calculates match percentages</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <h3>Gap Analysis</h3>
+          <p>Shows matched and missing skills for each position</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-card">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-icon">🤖</div>
+      </div>
+      <h2 class="loading-title">Analyzing Your Resume</h2>
+      <div class="loading-steps">
+        <div class="loading-step active" id="step-1">
+          <div class="step-dot"></div>
+          <span>Parsing PDF document...</span>
+        </div>
+        <div class="loading-step" id="step-2">
+          <div class="step-dot"></div>
+          <span>Searching job listings...</span>
+        </div>
+        <div class="loading-step" id="step-3">
+          <div class="step-dot"></div>
+          <span>AI analyzing skills & matching jobs...</span>
+        </div>
+        <div class="loading-step" id="step-4">
+          <div class="step-dot"></div>
+          <span>Preparing your results...</span>
+        </div>
+      </div>
+      <p class="loading-hint">This takes about 10–20 seconds</p>
+    </div>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('resume-input');
+    const fileSelected = document.getElementById('file-selected');
+    const fileName = document.getElementById('file-name');
+    const fileSize = document.getElementById('file-size');
+    const fileRemove = document.getElementById('file-remove');
+    const btnAnalyze = document.getElementById('btn-analyze');
+    const uploadForm = document.getElementById('upload-form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // Click to upload
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type === 'application/pdf') {
+        fileInput.files = e.dataTransfer.files;
+        showFile(files[0]);
+      }
+    });
+
+    // File selected
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        showFile(fileInput.files[0]);
+      }
+    });
+
+    function showFile(file) {
+      fileName.textContent = file.name;
+      fileSize.textContent = formatBytes(file.size);
+      dropZone.style.display = 'none';
+      fileSelected.style.display = 'flex';
+      btnAnalyze.disabled = false;
+    }
+
+    // Remove file
+    fileRemove.addEventListener('click', () => {
+      fileInput.value = '';
+      dropZone.style.display = 'flex';
+      fileSelected.style.display = 'none';
+      btnAnalyze.disabled = true;
+    });
+
+    // Format bytes
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // Form submit — show loading
+    uploadForm.addEventListener('submit', () => {
+      loadingOverlay.classList.add('active');
+      // Animate steps
+      const steps = [
+        { el: 'step-1', delay: 0 },
+        { el: 'step-2', delay: 3000 },
+        { el: 'step-3', delay: 8000 },
+        { el: 'step-4', delay: 14000 }
+      ];
+      steps.forEach(step => {
+        setTimeout(() => {
+          document.getElementById(step.el).classList.add('active');
+        }, step.delay);
+      });
+    });
+  </script>
+</body>
+</html>

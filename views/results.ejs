@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your AI-powered resume analysis results showing skill matches and job recommendations.">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="results-page">
+
+  <!-- Animated background -->
+  <div class="bg-gradient"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="results-header">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="12" fill="url(#logoGrad2)"/>
+            <path d="M12 28V18L20 12L28 18V28H23V22H17V28H12Z" fill="white" fill-opacity="0.95"/>
+            <defs>
+              <linearGradient id="logoGrad2" x1="0" y1="0" x2="40" y2="40">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">GROW<span class="logo-dot">.AI</span></span>
+      </a>
+      <a href="/" class="btn-new-scan" id="btn-new-scan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        New Analysis
+      </a>
+    </header>
+
+    <!-- Profile summary -->
+    <section class="profile-section">
+      <div class="section-header">
+        <h1>Your Resume Profile</h1>
+        <div class="experience-badge badge-<%= profile.experience %>">
+          <%= profile.experience.charAt(0).toUpperCase() + profile.experience.slice(1) %>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h3 class="card-label">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Skills Identified
+          </h3>
+          <div class="tag-cloud">
+            <% profile.skills.forEach(skill => { %>
+              <span class="tag tag-skill"><%= skill %></span>
+            <% }); %>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <h3 class="card-label">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Suggested Roles
+          </h3>
+          <div class="tag-cloud">
+            <% profile.roles.forEach(role => { %>
+              <span class="tag tag-role"><%= role %></span>
+            <% }); %>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <h3 class="card-label">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 7V4H20V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M9 20H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Keywords
+          </h3>
+          <div class="tag-cloud">
+            <% profile.keywords.forEach(kw => { %>
+              <span class="tag tag-keyword"><%= kw %></span>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats bar -->
+    <section class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value"><%= totalJobsFound %></span>
+        <span class="stat-label">Jobs Found</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value"><%= filteredCount %></span>
+        <span class="stat-label">Skill Matches</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value"><%= jobs.length %></span>
+        <span class="stat-label">AI Scored</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value"><%= profile.skills.length %></span>
+        <span class="stat-label">Skills Found</span>
+      </div>
+    </section>
+
+    <!-- Job matches -->
+    <section class="jobs-section">
+      <h2 class="section-title">AI-Matched Jobs</h2>
+
+      <% if (jobs.length === 0) { %>
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <h3>No Matching Jobs Found</h3>
+          <p>We couldn't find strong job matches right now. Try updating your resume with more specific skills.</p>
+          <a href="/" class="btn-analyze">Try Again</a>
+        </div>
+      <% } else { %>
+        <div class="job-cards">
+          <% jobs.forEach((job, index) => { %>
+            <div class="job-card" style="animation-delay: <%= index * 0.06 %>s">
+              <!-- Match header -->
+              <div class="job-card-header">
+                <div class="job-info">
+                  <h3 class="job-title"><%= job.title %></h3>
+                  <p class="job-company"><%= job.company %></p>
+                  <% if (job.salary && job.salary !== 'Not specified') { %>
+                    <p class="job-salary">💰 <%= job.salary %></p>
+                  <% } %>
+                </div>
+                <div class="match-ring match-<%= job.match_percentage >= 70 ? 'high' : (job.match_percentage >= 40 ? 'mid' : 'low') %>">
+                  <svg viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="6"/>
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="6"
+                      stroke-dasharray="<%= (job.match_percentage / 100) * 213.6 %> 213.6"
+                      stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                  </svg>
+                  <span class="match-value"><%= job.match_percentage %>%</span>
+                </div>
+              </div>
+
+              <!-- Reason -->
+              <p class="job-reason"><%= job.reason %></p>
+
+              <!-- Skills comparison -->
+              <div class="skills-comparison">
+                <div class="skill-group skill-matched">
+                  <h4>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M20 6L9 17L4 12" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Matched
+                  </h4>
+                  <div class="skill-tags">
+                    <% job.matched_skills.forEach(s => { %>
+                      <span class="mini-tag matched"><%= s %></span>
+                    <% }); %>
+                    <% if (job.matched_skills.length === 0) { %>
+                      <span class="mini-tag none">None</span>
+                    <% } %>
+                  </div>
+                </div>
+                <div class="skill-group skill-missing">
+                  <h4>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M18 6L6 18M6 6L18 18" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    Missing
+                  </h4>
+                  <div class="skill-tags">
+                    <% job.missing_skills.forEach(s => { %>
+                      <span class="mini-tag missing"><%= s %></span>
+                    <% }); %>
+                    <% if (job.missing_skills.length === 0) { %>
+                      <span class="mini-tag perfect">All matched!</span>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Apply button -->
+              <a href="<%= job.apply_url %>" target="_blank" rel="noopener noreferrer" class="btn-apply" id="apply-btn-<%= index %>">
+                Apply Now
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Built with ❤️ using Node.js, Gemini AI & Adzuna API</p>
+      <p class="footer-sub">GROW.AI — AI Resume Analyzer</p>
+    </footer>
+  </div>
+
+</body>
+</html>
