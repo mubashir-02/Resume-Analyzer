@@ -23,6 +23,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get('/login', (req, res) => {
+  res.render('login', { title: 'Grow — AI Talent Acquisition' });
+});
+
 // Routes
 const uploadRoutes = require('./routes/upload');
 app.use('/', uploadRoutes);

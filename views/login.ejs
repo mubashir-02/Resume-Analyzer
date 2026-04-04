@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login-page.css">
+</head>
+<body class="login-page">
+
+  <div class="navbar-wrapper">
+    <div class="navbar-glass">
+      <nav class="navbar" aria-label="Primary">
+        <a href="/login" class="logo-placeholder" aria-label="Grow home">G</a>
+        <div class="nav-center">
+          <button type="button" class="nav-item">
+            Features
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <button type="button" class="nav-item">Solutions</button>
+          <button type="button" class="nav-item">Plans</button>
+          <button type="button" class="nav-item">
+            Learning
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div class="navbar-spacer" aria-hidden="true"></div>
+      </nav>
+    </div>
+  </div>
+
+  <section class="hero-section" aria-labelledby="landing-headline">
+    <div class="hero-content">
+      <h1 class="hero-headline" id="landing-headline">Grow</h1>
+      <p class="hero-subtext">
+        The most powerful AI ever deployed<br>
+        in talent acquisition
+      </p>
+      <div class="hero-cta">
+        <a href="/" class="cta-button">Analyze your Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="social-proof" aria-hidden="false">
+    <video
+      id="bgVideo"
+      class="video-bg"
+      autoplay
+      muted
+      playsinline
+    >
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260308_114720_3dabeb9e-2c39-4907-b747-bc3544e2d5b7.mp4" type="video/mp4">
+    </video>
+    <div class="gradient-overlay"></div>
+    <div class="social-content">
+      <div class="video-spacer"></div>
+      <div class="marquee-container">
+        <div class="marquee-label">
+          Relied on by brands<br>
+          across the globe
+        </div>
+        <div class="marquee-wrapper">
+          <div class="marquee-track" id="marqueeTrack"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var brands = ['Vortex', 'Nimbus', 'Prysma', 'Cirrus', 'Kynder', 'Halcyn'];
+
+      function createLogoItem(name) {
+        return (
+          '<div class="logo-item">' +
+          '<div class="logo-icon liquid-glass"><span>' + name[0] + '</span></div>' +
+          '<span class="logo-name">' + name + '</span>' +
+          '</div>'
+        );
+      }
+
+      var marqueeTrack = document.getElementById('marqueeTrack');
+      if (marqueeTrack) {
+        var allBrands = brands.concat(brands);
+        marqueeTrack.innerHTML = allBrands.map(createLogoItem).join('');
+      }
+
+      var video = document.getElementById('bgVideo');
+      if (!video) return;
+
+      var fadeDuration = 0.5;
+
+      function updateVideoOpacity() {
+        if (!video.duration) return;
+        var currentTime = video.currentTime;
+        var duration = video.duration;
+        var opacity = 1;
+        if (currentTime < fadeDuration) {
+          opacity = currentTime / fadeDuration;
+        } else if (currentTime > duration - fadeDuration) {
+          var remaining = duration - currentTime;
+          opacity = remaining / fadeDuration;
+        }
+        video.style.opacity = opacity;
+      }
+
+      function animate() {
+        updateVideoOpacity();
+        requestAnimationFrame(animate);
+      }
+
+      video.addEventListener('ended', function () {
+        video.style.opacity = 0;
+        setTimeout(function () {
+          video.currentTime = 0;
+          video.play();
+        }, 100);
+      });
+
+      video.addEventListener('loadedmetadata', function () {
+        animate();
+      });
+
+      if (video.readyState >= 2) {
+        animate();
+      }
+    })();
+  </script>
+</body>
+</html>
