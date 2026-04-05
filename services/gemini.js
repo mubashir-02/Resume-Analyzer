@@ -246,6 +246,7 @@ function heuristicJobMatches(resumeText, jobs) {
     return {
       title: job.title || 'Untitled',
       company: job.company || 'Unknown',
+      description: job.description || '',
       match_percentage: m,
       matched_skills: matched,
       missing_skills: [],
@@ -325,6 +326,7 @@ Keep the response compact.`;
       return {
         title: job.title || 'Untitled',
         company: job.company || 'Unknown',
+        description: job.description || '',
         match_percentage: Math.min(100, Math.max(0, parseInt(match.m, 10) || 0)),
         matched_skills: Array.isArray(match.ms) ? match.ms.slice(0, 8) : [],
         missing_skills: Array.isArray(match.xs) ? match.xs.slice(0, 8) : [],
@@ -466,4 +468,91 @@ Do NOT include any text outside the JSON.`;
   return data;
 }
 
-module.exports = { extractSkills, extractSkillsFromPdfBuffer, analyzeResumeAndMatchJobs };
+/**
+ * Basic bullet / line extraction for preprocessing (newline or leading -, •, *, numbers).
+ */
+function extractResumeBullets(text) {
+  if (!text || typeof text !== 'string') return [];
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const bullets = [];
+  for (const line of lines) {
+    if (/^[-•*▪]\s*/.test(line) || /^\d+[.)]\s*/.test(line)) {
+      bullets.push(line.replace(/^[-•*▪]\s*|^\d+[.)]\s*/, '').trim());
+    }
+  }
+  if (bullets.length > 0) return bullets.slice(0, 25);
+  return lines.filter(l => l.length > 12).slice(0, 15);
+}
+
+/**
+ * Ask Gemini to suggest improved resume content aligned with a job description.
+ */
+async function improveResumeForJob(resumeText, jobDescription) {
+  const model = genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    generationConfig: {
+      temperature: 0.25,
+      maxOutputTokens: 8192,
+      responseMimeType: 'application/json',
+    }
+  });
+
+  const jobCtx = (jobDescription || '').slice(0, 8000);
+  const resumeCtx = (resumeText || '').slice(0, 12000);
+
+  const prompt = `You are an expert resume optimizer.
+
+Rewrite the candidate's resume to better match the job description.
+
+Rules:
+- Keep all information truthful
+- Do not add fake experience
+- Improve wording using strong action verbs
+- Optimize for ATS keywords
+- Make it concise and professional
+
+Job Description:
+"""
+${jobCtx}
+"""
+
+Resume:
+"""
+${resumeCtx}
+"""
+
+Return ONLY valid JSON with this exact structure (no markdown):
+{
+  "summary": "one or two sentence professional summary tailored to the job",
+  "skills": ["skill phrases aligned with the job"],
+  "experience": [
+    { "original": "verbatim or paraphrased line from resume", "improved": "stronger ATS-friendly line" }
+  ]
+}
+
+Include 5-15 experience items when possible: map each to a distinct resume bullet or phrase. If the resume has few bullets, merge short lines. Every "original" should reflect real content from the resume; "improved" must not invent employers, dates, or roles.`;
+
+  const parsed = await callGeminiWithJSONRetry(model, prompt, 2, { maxRetries: 2, rateLimitWaitMs: 12000 });
+
+  const experience = Array.isArray(parsed.experience) ? parsed.experience : [];
+  const cleaned = experience
+    .filter(item => item && (String(item.original || '').trim() || String(item.improved || '').trim()))
+    .map(item => ({
+      original: String(item.original || '').trim(),
+      improved: String(item.improved || '').trim()
+    }));
+
+  return {
+    summary: typeof parsed.summary === 'string' ? parsed.summary.trim() : '',
+    skills: Array.isArray(parsed.skills) ? parsed.skills.map(s => String(s).trim()).filter(Boolean) : [],
+    experience: cleaned
+  };
+}
+
+module.exports = {
+  extractSkills,
+  extractSkillsFromPdfBuffer,
+  analyzeResumeAndMatchJobs,
+  extractResumeBullets,
+  improveResumeForJob
+};

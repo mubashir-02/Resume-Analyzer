@@ -29,7 +29,9 @@ app.get('/login', (req, res) => {
 
 // Routes
 const uploadRoutes = require('./routes/upload');
+const improveRoute = require('./routes/improveRoute');
 app.use('/', uploadRoutes);
+app.use('/', improveRoute);
 
 // Global error handler
 app.use((err, req, res, next) => {

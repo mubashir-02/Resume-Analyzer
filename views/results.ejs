@@ -196,18 +196,232 @@
                 </div>
               </div>
 
-              <!-- Apply button -->
-              <a href="<%= job.apply_url %>" target="_blank" rel="noopener noreferrer" class="btn-apply" id="apply-btn-<%= index %>">
-                Apply Now
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
+              <div class="job-card-actions">
+                <button type="button" class="btn-improve" onclick="improveResume(<%= index %>)">Improve Resume for this Job</button>
+                <a href="<%= job.apply_url %>" target="_blank" rel="noopener noreferrer" class="btn-apply" id="apply-btn-<%= index %>">
+                  Apply Now
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           <% }); %>
         </div>
       <% } %>
     </section>
+
+    <!-- Improve resume modal -->
+    <div id="improve-modal" class="improve-modal" hidden aria-hidden="true">
+      <div class="improve-modal-backdrop" onclick="closeImproveModal()"></div>
+      <div class="improve-modal-dialog" role="dialog" aria-labelledby="improve-modal-title">
+        <div class="improve-modal-header">
+          <h2 id="improve-modal-title">Improved resume for this job</h2>
+          <button type="button" class="improve-modal-close" onclick="closeImproveModal()" aria-label="Close">&times;</button>
+        </div>
+        <p id="improve-modal-status" class="improve-modal-status"></p>
+        <div id="improve-modal-summary-wrap" class="improve-summary-wrap" hidden>
+          <h3 class="improve-subheading">Suggested summary</h3>
+          <p id="improve-modal-summary" class="improve-summary-text"></p>
+        </div>
+        <div id="improve-modal-skills-wrap" class="improve-skills-wrap" hidden>
+          <h3 class="improve-subheading">Skills to highlight</h3>
+          <div id="improve-modal-skills" class="improve-skill-tags"></div>
+        </div>
+        <h3 class="improve-subheading">Experience: original vs improved</h3>
+        <div id="improve-modal-rows" class="improve-rows"></div>
+      </div>
+    </div>
+
+    <script type="application/json" id="improve-page-data"><%- improvePageJson %></script>
+    <script>
+      (function () {
+        var dataEl = document.getElementById('improve-page-data');
+        var ctx = { resumeText: '', jobs: [] };
+        if (dataEl && dataEl.textContent) {
+          try {
+            ctx = JSON.parse(dataEl.textContent);
+            // #region agent log
+            fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
+              body: JSON.stringify({
+                sessionId: 'b73140',
+                runId: 'post-fix-v2',
+                hypothesisId: 'H2',
+                location: 'results.ejs:ctx-after-parse',
+                message: 'client ctx from improve-page-data',
+                data: {
+                  resumeLen: (ctx.resumeText && String(ctx.resumeText).length) || 0,
+                  resumeTrimLen: (ctx.resumeText && String(ctx.resumeText).trim().length) || 0,
+                  jobsCount: (ctx.jobs && ctx.jobs.length) || 0,
+                  jsonSnippetLen: dataEl.textContent.length
+                },
+                timestamp: Date.now()
+              })
+            }).catch(function () {});
+            // #endregion
+          } catch (e) {
+            console.error(e);
+            // #region agent log
+            fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
+              body: JSON.stringify({
+                sessionId: 'b73140',
+                runId: 'post-fix',
+                hypothesisId: 'H3',
+                location: 'results.ejs:parse-error',
+                message: 'JSON.parse failed for improve-page-data',
+                data: { err: String(e && e.message), rawLen: dataEl.textContent.length },
+                timestamp: Date.now()
+              })
+            }).catch(function () {});
+            // #endregion
+          }
+        }
+
+        window.closeImproveModal = function () {
+          var modal = document.getElementById('improve-modal');
+          if (!modal) return;
+          modal.hidden = true;
+          modal.setAttribute('aria-hidden', 'true');
+        };
+
+        function openImproveModal() {
+          var modal = document.getElementById('improve-modal');
+          if (!modal) return;
+          modal.hidden = false;
+          modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function setStatus(msg) {
+          var el = document.getElementById('improve-modal-status');
+          if (el) el.textContent = msg || '';
+        }
+
+        function renderPayload(data) {
+          var rows = document.getElementById('improve-modal-rows');
+          var sumWrap = document.getElementById('improve-modal-summary-wrap');
+          var sumEl = document.getElementById('improve-modal-summary');
+          var skWrap = document.getElementById('improve-modal-skills-wrap');
+          var skEl = document.getElementById('improve-modal-skills');
+          if (!rows) return;
+
+          rows.innerHTML = '';
+          var list = data.improvements || data.bullets || [];
+          if (data.summary && sumEl && sumWrap) {
+            sumEl.textContent = data.summary;
+            sumWrap.hidden = false;
+          } else if (sumWrap) sumWrap.hidden = true;
+
+          if (skEl && skWrap) {
+            skEl.innerHTML = '';
+            var skills = data.skills || [];
+            if (skills.length) {
+              skWrap.hidden = false;
+              skills.forEach(function (s) {
+                var span = document.createElement('span');
+                span.className = 'improve-skill-tag';
+                span.textContent = s;
+                skEl.appendChild(span);
+              });
+            } else skWrap.hidden = true;
+          }
+
+          if (!list.length) {
+            rows.innerHTML = '<p class="improve-empty">No bullet comparisons returned. Try again or check your resume formatting.</p>';
+            return;
+          }
+
+          list.forEach(function (pair) {
+            var row = document.createElement('div');
+            row.className = 'improve-pair';
+            var o = document.createElement('div');
+            o.className = 'improve-col improve-col-original';
+            o.innerHTML = '<span class="improve-label">Original</span><p class="improve-body"></p>';
+            o.querySelector('.improve-body').textContent = pair.original || '—';
+
+            var i = document.createElement('div');
+            i.className = 'improve-col improve-col-improved';
+            i.innerHTML = '<span class="improve-label">Improved</span><p class="improve-body"></p>';
+            i.querySelector('.improve-body').textContent = pair.improved || '—';
+
+            row.appendChild(o);
+            row.appendChild(i);
+            rows.appendChild(row);
+          });
+        }
+
+        window.improveResume = async function (jobIndex) {
+          var job = ctx.jobs[jobIndex];
+          // #region agent log
+          fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
+            body: JSON.stringify({
+              sessionId: 'b73140',
+              runId: 'post-fix-v2',
+              hypothesisId: 'H4',
+              location: 'results.ejs:improveResume-click',
+              message: 'improve button clicked',
+              data: {
+                jobIndex: jobIndex,
+                hasJob: !!job,
+                resumeLen: (ctx.resumeText && String(ctx.resumeText).length) || 0,
+                resumeTrimLen: (ctx.resumeText && String(ctx.resumeText).trim().length) || 0
+              },
+              timestamp: Date.now()
+            })
+          }).catch(function () {});
+          // #endregion
+          if (!job) {
+            alert('Job not found.');
+            return;
+          }
+          if (!ctx.resumeText || !String(ctx.resumeText).trim()) {
+            alert('Resume text is not available. Upload your resume again.');
+            return;
+          }
+
+          openImproveModal();
+          setStatus('Improving your resume…');
+          document.getElementById('improve-modal-summary-wrap').hidden = true;
+          document.getElementById('improve-modal-skills-wrap').hidden = true;
+          document.getElementById('improve-modal-rows').innerHTML = '';
+
+          var jobDescription = [
+            job.description,
+            job.title ? 'Job title: ' + job.title : '',
+            job.apply_url ? 'Apply URL: ' + job.apply_url : ''
+          ].filter(Boolean).join('\n\n');
+
+          try {
+            var res = await fetch('/improve-resume', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                resumeText: ctx.resumeText,
+                jobDescription: jobDescription
+              })
+            });
+            var data = await res.json().catch(function () { return {}; });
+            if (!res.ok) {
+              throw new Error(data.error || data.message || 'Request failed');
+            }
+            setStatus('');
+            renderPayload(data);
+          } catch (err) {
+            setStatus(err.message || 'Something went wrong.');
+            document.getElementById('improve-modal-rows').innerHTML = '';
+          }
+        };
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') window.closeImproveModal();
+        });
+      })();
+    </script>
 
     <!-- Footer -->
     <footer class="footer">

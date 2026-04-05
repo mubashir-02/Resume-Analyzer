@@ -33,8 +33,13 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }
 });
 
-// GET / — Render upload page
+// GET / — Redirect to login page
 router.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+// GET /dashboard — Render upload page
+router.get('/dashboard', (req, res) => {
   res.render('index', { title: 'GROW.AI — Resume Analyzer' });
 });
 
@@ -58,6 +63,7 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
     const pdfBuffer = fs.readFileSync(uploadedFilePath);
     const pdfData = await pdfParse(pdfBuffer);
     const rawResumeText = typeof pdfData.text === 'string' ? pdfData.text : '';
+    let resumeTextMultiline = rawResumeText.trim();
     let resumeText = rawResumeText.replace(/\s+/g, ' ').trim();
 
     let profile;
@@ -66,10 +72,19 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
       console.log('📎 No embedded text in PDF; reading document with Gemini...');
       const fromPdf = await extractSkillsFromPdfBuffer(pdfBuffer);
       resumeText = (fromPdf.resume_text || '').replace(/\s+/g, ' ').trim();
+      const rawFromPdf = typeof fromPdf.resume_text === 'string' ? fromPdf.resume_text.trim() : '';
+      if (rawFromPdf) {
+        resumeTextMultiline = rawFromPdf;
+      } else if (!resumeTextMultiline && resumeText) {
+        resumeTextMultiline = resumeText;
+      }
       if (!resumeText) {
         resumeText = [...(fromPdf.skills || []), ...(fromPdf.roles || []), ...(fromPdf.keywords || [])]
           .filter(Boolean)
           .join('. ');
+      }
+      if (!resumeTextMultiline.trim() && resumeText) {
+        resumeTextMultiline = resumeText;
       }
       if (!resumeText.trim()) {
         throw new Error('Could not read this PDF. If it is a scanned image, try exporting a text-based PDF or use another file.');
@@ -176,12 +191,53 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
     // 5. Cleanup & render
     cleanupFile(uploadedFilePath);
 
+    const improveResumeText = ((resumeTextMultiline || '').trim() || (resumeText || '').trim() || '');
+    const improvePageJson = JSON.stringify({
+      resumeText: improveResumeText,
+      jobs: matchedJobs.map(j => ({
+        title: j.title,
+        description: j.description || '',
+        apply_url: j.apply_url || ''
+      }))
+    }).replace(/</g, '\\u003c');
+
+    // #region agent log
+    (function () {
+      const logLine = JSON.stringify({
+        sessionId: 'b73140',
+        runId: 'post-fix-v2',
+        hypothesisId: 'H1',
+        location: 'routes/upload.js:pre-render',
+        message: 'results render locals',
+        data: {
+          resumeMlLen: (resumeTextMultiline || '').length,
+          resumeMlTrimLen: (resumeTextMultiline || '').trim().length,
+          resumeCollapsedLen: (resumeText || '').length,
+          improveResumeLen: improveResumeText.length,
+          improvePageJsonLen: improvePageJson.length,
+          jobsCount: matchedJobs.length
+        },
+        timestamp: Date.now()
+      });
+      try {
+        fs.appendFileSync(path.join(__dirname, '..', 'debug-b73140.log'), logLine + '\n');
+      } catch (_) {}
+      fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
+        body: logLine
+      }).catch(() => {});
+    })();
+    // #endregion
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.render('results', {
       title: 'Your Resume Analysis — GROW.AI',
       profile,
       jobs: matchedJobs,
       totalJobsFound: allJobs.length,
-      filteredCount: filteredJobs.length
+      filteredCount: filteredJobs.length,
+      improvePageJson
     });
 
   } catch (error) {
