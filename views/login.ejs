@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/login-page.css">
 </head>
+
 <body class="login-page">
 
   <div class="navbar-wrapper">
@@ -17,7 +23,8 @@
       <nav class="navbar" aria-label="Primary">
         <a href="/login" class="logo-brand" aria-label="Grow AI home">
           <span class="logo-icon-box">
-            <svg class="logo-house-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="logo-house-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"></path>
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
@@ -29,7 +36,7 @@
           <button type="button" class="nav-item">How it Works</button>
           <button type="button" class="nav-item">Pricing</button>
         </div>
-        <a href="/dashboard" class="nav-signin-btn">Sign In</a>
+        <a href="/" class="nav-signin-btn">Sign In</a>
       </nav>
     </div>
   </div>
@@ -38,8 +45,7 @@
     <div class="hero-content">
       <h1 class="hero-headline" id="landing-headline">Grow</h1>
       <p class="hero-subtext">
-        The most powerful AI ever deployed<br>
-        in talent acquisition
+        Analyze. Match. Elevate
       </p>
       <div class="hero-cta">
         <a href="/dashboard" class="cta-button">Analyze your Resume</a>
@@ -48,14 +54,10 @@
   </section>
 
   <section class="social-proof" aria-hidden="false">
-    <video
-      id="bgVideo"
-      class="video-bg"
-      autoplay
-      muted
-      playsinline
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260308_114720_3dabeb9e-2c39-4907-b747-bc3544e2d5b7.mp4" type="video/mp4">
+    <video id="bgVideo" class="video-bg" autoplay muted playsinline>
+      <source
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260308_114720_3dabeb9e-2c39-4907-b747-bc3544e2d5b7.mp4"
+        type="video/mp4">
     </video>
     <div class="gradient-overlay"></div>
     <div class="social-content">
@@ -133,4 +135,5 @@
     })();
   </script>
 </body>
+
 </html>

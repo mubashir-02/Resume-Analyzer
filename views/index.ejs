@@ -249,7 +249,7 @@
             color: #fff;
         }
 
-        /* Loading overlay */
+        /* Loading overlay (resume analyzing) */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -261,7 +261,7 @@
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.35s ease;
         }
 
         .loading-overlay.active {
@@ -269,71 +269,347 @@
             visibility: visible;
         }
 
-        .loading-card {
-            text-align: center;
-            max-width: 400px;
-            padding: 48px 40px;
-            background: rgba(26, 26, 26, 0.8);
+        .analyze-bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle,
+                    rgba(255, 107, 138, 0.08) 0%,
+                    transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .analyze-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 560px;
+            padding: 0 24px;
+        }
+
+        .analyze-glass-card {
+            background: rgba(42, 42, 42, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+            padding: 48px 40px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: analyzeCardEntry 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
-        .spinner-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 28px;
+        @keyframes analyzeCardEntry {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .spinner-ring {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: #fb7185;
-            border-right-color: #fda4af;
-            animation: spin 1.2s linear infinite;
-        }
-
-        .spinner-icon {
-            position: absolute;
-            inset: 0;
-            display: flex;
+        .analyze-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            animation: pulse-icon 2s ease-in-out infinite;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 107, 138, 0.1);
+            border: 1px solid rgba(255, 107, 138, 0.2);
+            border-radius: 100px;
+            margin-bottom: 28px;
         }
 
-        @keyframes spin {
+        .analyze-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: #fb7185;
+            border-radius: 50%;
+            animation: analyzePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes analyzePulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(0.9);
+            }
+        }
+
+        .analyze-badge-text {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #fb7185;
+        }
+
+        .analyze-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            font-family: var(--font-display, 'Inter', sans-serif);
+        }
+
+        .analyze-subtitle {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.65);
+            text-align: center;
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        .ai-core {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 34px;
+        }
+
+        .orbit {
+            position: absolute;
+            inset: 0;
+            border: 2px solid transparent;
+            border-top-color: #fb7185;
+            border-right-color: rgba(255, 107, 138, 0.2);
+            border-radius: 50%;
+            animation: analyzeSpin 3s linear infinite;
+        }
+
+        .orbit-2 {
+            inset: 15%;
+            border-top-color: rgba(255, 107, 138, 0.6);
+            animation: analyzeSpin 2s linear infinite reverse;
+        }
+
+        .orbit-3 {
+            inset: 30%;
+            border-top-color: rgba(255, 107, 138, 0.3);
+            animation: analyzeSpin 1.5s linear infinite;
+        }
+
+        @keyframes analyzeSpin {
+            from {
+                transform: rotate(0deg);
+            }
+
             to {
                 transform: rotate(360deg);
             }
         }
 
-        @keyframes pulse-icon {
+        .core-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #fb7185, #e85d75);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(255, 107, 138, 0.3);
+        }
 
-            0%,
-            100% {
-                transform: scale(1);
+        .core-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+        }
+
+        .analyze-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .analyze-step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-step.active {
+            background: rgba(255, 107, 138, 0.08);
+            border-color: rgba(255, 107, 138, 0.3);
+            transform: translateX(6px);
+        }
+
+        .analyze-step.completed {
+            opacity: 0.55;
+        }
+
+        .analyze-step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-step.active .analyze-step-icon {
+            background: rgba(255, 107, 138, 0.15);
+            border-color: rgba(255, 107, 138, 0.4);
+        }
+
+        .analyze-step.completed .analyze-step-icon {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .analyze-step-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: rgba(255, 255, 255, 0.65);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .analyze-step.active .analyze-step-icon svg {
+            stroke: #ff8fa3;
+        }
+
+        .analyze-step.completed .analyze-step-icon svg {
+            stroke: #22c55e;
+        }
+
+        .analyze-step-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 3px;
+        }
+
+        .analyze-step-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        .analyze-step-status {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .analyze-step.active .analyze-step-status {
+            background: rgba(255, 107, 138, 0.15);
+            color: #fb7185;
+            border-color: rgba(255, 107, 138, 0.3);
+        }
+
+        .progress-section {
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .progress-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fb7185;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 35%;
+            background: linear-gradient(90deg, #fb7185, #ff8fa3);
+            border-radius: 100px;
+            animation: analyzeShimmer 2s infinite;
+            background-size: 200% 100%;
+        }
+
+        @keyframes analyzeShimmer {
+            0% {
+                background-position: 100% 0;
             }
 
-            50% {
-                transform: scale(1.1);
+            100% {
+                background-position: -100% 0;
             }
         }
 
-        @keyframes float {
+        .time-estimate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+        }
 
-            0%,
-            100% {
-                transform: translateY(0);
+        .time-estimate svg {
+            width: 16px;
+            height: 16px;
+            stroke: rgba(255, 255, 255, 0.35);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        @media (max-width: 480px) {
+            .analyze-glass-card {
+                padding: 36px 24px;
             }
 
-            50% {
-                transform: translateY(-20px);
+            .analyze-title {
+                font-size: 24px;
+            }
+
+            .analyze-step-status {
+                display: none;
             }
         }
 
@@ -428,7 +704,7 @@
                 <a href="#stats" class="hover:text-warm-100 transition-colors duration-300">Stats</a>
             </div>
 
-            <a href="/" class=" btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-block">
+            <a href="" class=" btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-block">
                 Sign In
             </a>
         </div>
@@ -467,7 +743,7 @@
                     style="animation-delay: 0.2s">
                     <div class="flex items-center gap-2">
                         <i data-lucide="shield-check" class="w-4 h-4 text-sage-400"></i>
-                        <span>Bank-level Security</span>
+                        <span>AI Skill Extraction</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <i data-lucide="zap" class="w-4 h-4 text-sand-400"></i>
@@ -475,7 +751,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <i data-lucide="users" class="w-4 h-4 text-coral-400"></i>
-                        <span>10K+ Users</span>
+                        <span>Resume Optimization</span>
                     </div>
                 </div>
             </div>
@@ -602,14 +878,14 @@
                     <div class="group">
                         <div
                             class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-sand-400 transition-colors">
-                            &lt;3s</div>
+                            &lt;15s</div>
                         <div class="text-sm text-warm-500 font-normal">Processing Time</div>
                     </div>
                 </div>
             </div>
 
             <!-- Testimonial -->
-            <div class="max-w-3xl mx-auto text-center mb-24 reveal">
+            <!-- <div class="max-w-3xl mx-auto text-center mb-24 reveal">
                 <div class="flex justify-center gap-1 mb-6">
                     <i data-lucide="star" class="w-5 h-5 text-sand-400 fill-sand-400"></i>
                     <i data-lucide="star" class="w-5 h-5 text-sand-400 fill-sand-400"></i>
@@ -631,7 +907,7 @@
                         <div class="text-warm-600 text-xs">Product Designer at Spotify</div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
         </div>
     </main>
@@ -649,7 +925,7 @@
             </div>
 
             <div class="text-sm text-warm-600 font-normal">
-                © 2025 GROW.AI. All rights reserved.
+                © 2026 GROW.AI. All rights reserved.
             </div>
 
             <div class="flex items-center gap-6">
@@ -667,32 +943,108 @@
     </footer>
 
     <!-- Loading overlay -->
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-card">
-            <div class="spinner-container">
-                <div class="spinner-ring"></div>
-                <div class="spinner-icon">🤖</div>
+    <div class="loading-overlay" id="loading-overlay" aria-hidden="true">
+        <div class="analyze-bg-glow"></div>
+        <div class="analyze-container">
+            <div class="analyze-glass-card">
+                <div style="text-align: center;">
+                    <div class="analyze-badge">
+                        <div class="analyze-badge-dot"></div>
+                        <span class="analyze-badge-text">AI Analysis in Progress</span>
+                    </div>
+                </div>
+
+                <h1 class="analyze-title">Analyzing Your Resume</h1>
+                <p class="analyze-subtitle">Extracting skills and matching opportunities</p>
+
+                <div class="ai-core" aria-hidden="true">
+                    <div class="orbit"></div>
+                    <div class="orbit orbit-2"></div>
+                    <div class="orbit orbit-3"></div>
+                    <div class="core-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 2C10.9 2 10 2.9 10 4V6H6C4.9 6 4 6.9 4 8V18C4 19.1 4.9 20 6 20H18C19.1 20 20 19.1 20 18V8C20 6.9 19.1 6 18 6H14V4C14 2.9 13.1 2 12 2ZM12 14C10.9 14 10 13.1 10 12C10 10.9 10.9 10 12 10C13.1 10 14 10.9 14 12C14 13.1 13.1 14 12 14Z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="analyze-steps" role="status" aria-live="polite">
+                    <div class="analyze-step active" id="step-1">
+                        <div class="analyze-step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="analyze-step-title">Parsing PDF document</div>
+                            <div class="analyze-step-desc">Extracting text & metadata</div>
+                        </div>
+                        <div class="analyze-step-status">Active</div>
+                    </div>
+
+                    <div class="analyze-step" id="step-2">
+                        <div class="analyze-step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="analyze-step-title">Searching job listings</div>
+                            <div class="analyze-step-desc">Scanning 50+ platforms</div>
+                        </div>
+                        <div class="analyze-step-status">Pending</div>
+                    </div>
+
+                    <div class="analyze-step" id="step-3">
+                        <div class="analyze-step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="analyze-step-title">AI analyzing & matching</div>
+                            <div class="analyze-step-desc">Neural network processing</div>
+                        </div>
+                        <div class="analyze-step-status">Pending</div>
+                    </div>
+
+                    <div class="analyze-step" id="step-4">
+                        <div class="analyze-step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="analyze-step-title">Preparing results</div>
+                            <div class="analyze-step-desc">Generating insights</div>
+                        </div>
+                        <div class="analyze-step-status">Pending</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span class="progress-label">Analysis Progress</span>
+                        <span class="progress-value" id="progress-value">35%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="time-estimate">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>This takes about 10-20 seconds</span>
+                </div>
             </div>
-            <h2 class="text-xl font-display font-semibold text-warm-100 mb-6">Analyzing Your Resume</h2>
-            <div class="flex flex-col gap-3 text-left mb-6">
-                <div class="loading-step active" id="step-1">
-                    <div class="step-dot"></div>
-                    <span>Parsing PDF document...</span>
-                </div>
-                <div class="loading-step" id="step-2">
-                    <div class="step-dot"></div>
-                    <span>Searching job listings...</span>
-                </div>
-                <div class="loading-step" id="step-3">
-                    <div class="step-dot"></div>
-                    <span>AI analyzing skills & matching jobs...</span>
-                </div>
-                <div class="loading-step" id="step-4">
-                    <div class="step-dot"></div>
-                    <span>Preparing your results...</span>
-                </div>
-            </div>
-            <p class="text-xs text-warm-600">This takes about 10–20 seconds</p>
         </div>
     </div>
 
@@ -780,15 +1132,42 @@
         // Form submit — show loading
         uploadForm.addEventListener('submit', () => {
             loadingOverlay.classList.add('active');
+            loadingOverlay.setAttribute('aria-hidden', 'false');
+
+            const progressValue = document.getElementById('progress-value');
+            const progressFill = document.getElementById('progress-fill');
+
             const steps = [
-                { el: 'step-1', delay: 0 },
-                { el: 'step-2', delay: 3000 },
-                { el: 'step-3', delay: 8000 },
-                { el: 'step-4', delay: 14000 }
+                { el: 'step-1', delay: 0, pct: 35, label: 'Active' },
+                { el: 'step-2', delay: 3000, pct: 55, label: 'Active' },
+                { el: 'step-3', delay: 8000, pct: 78, label: 'Active' },
+                { el: 'step-4', delay: 14000, pct: 92, label: 'Active' }
             ];
-            steps.forEach(step => {
+
+            const allStepEls = steps.map(s => document.getElementById(s.el)).filter(Boolean);
+            allStepEls.forEach((el, idx) => {
+                el.classList.toggle('active', idx === 0);
+                el.classList.toggle('completed', false);
+                const badge = el.querySelector('.analyze-step-status');
+                if (badge) badge.textContent = idx === 0 ? 'Active' : 'Pending';
+            });
+
+            if (progressValue) progressValue.textContent = '35%';
+            if (progressFill) progressFill.style.width = '35%';
+
+            steps.forEach((step, idx) => {
                 setTimeout(() => {
-                    document.getElementById(step.el).classList.add('active');
+                    allStepEls.forEach((el, j) => {
+                        const isActive = j === idx;
+                        const isCompleted = j < idx;
+                        el.classList.toggle('active', isActive);
+                        el.classList.toggle('completed', isCompleted);
+                        const badge = el.querySelector('.analyze-step-status');
+                        if (badge) badge.textContent = isActive ? 'Active' : (isCompleted ? 'Done' : 'Pending');
+                    });
+
+                    if (progressValue) progressValue.textContent = step.pct + '%';
+                    if (progressFill) progressFill.style.width = step.pct + '%';
                 }, step.delay);
             });
         });
