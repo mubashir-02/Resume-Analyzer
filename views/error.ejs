@@ -1,34 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %> — GROW.AI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body class="error-page">
-  <div class="bg-gradient"></div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> — GROW.AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
 
-  <div class="container">
-    <div class="error-card">
-      <div class="error-icon">⚠️</div>
-      <h1><%= title %></h1>
-      <p class="error-message"><%= message %></p>
-      <% if (details) { %>
-        <pre class="error-details"><%= details %></pre>
-      <% } %>
-      <a href="/" class="btn-analyze">
-        <span class="btn-text">Try Again</span>
-        <span class="btn-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </a>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Satoshi', 'sans-serif'],
+                        display: ['Clash Display', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: { primary: '#0f0f0f', secondary: '#1a1a1a', tertiary: '#242424' },
+                        warm: {
+                            50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1',
+                            400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c',
+                            800: '#292524', 900: '#1c1917',
+                        },
+                        coral: {
+                            50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af',
+                            400: '#fb7185', 500: '#f43f5e', 600: '#e11d48',
+                        },
+                        sage: {
+                            50: '#f6f7f6', 100: '#e3e7e3', 200: '#c7d2c7', 300: '#a3b5a3',
+                            400: '#7a947a', 500: '#5c7a5c', 600: '#486148',
+                        },
+                        sand: {
+                            50: '#fdfbf7', 100: '#f7f3e8', 200: '#efe5d0',
+                            300: '#e6d5b8', 400: '#d4b896',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'gradient-x': 'gradient-x 8s ease infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        'gradient-x': { '0%, 100%': { 'background-position': '0% 50%' }, '50%': { 'background-position': '100% 50%' } },
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #fafaf9;
+            font-family: 'Satoshi', sans-serif;
+            overflow-x: hidden;
+        }
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 100; opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .glass {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #1c1917, #0f0f0f);
+            background-size: 400% 400%;
+            animation: gradient-x 15s ease infinite;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #fb7185 0%, #fda4af 50%, #f7f3e8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .icon-wrap {
+            background: linear-gradient(135deg, rgba(251,113,133,0.1) 0%, rgba(163,181,163,0.1) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .btn-primary::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(225,29,72,0.3); }
+        ::selection { background: rgba(251,113,133,0.3); color: #fff; }
+        @keyframes gradient-x { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen relative flex items-center justify-center">
+    <!-- Noise overlay -->
+    <div class="noise"></div>
+
+    <div class="relative z-10 w-full max-w-lg mx-auto px-6 animate-slide-up">
+        <div class="glass rounded-3xl p-10 md:p-14 text-center shadow-2xl shadow-black/50">
+            <!-- Icon -->
+            <div class="w-20 h-20 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center">
+                <i data-lucide="alert-triangle" class="w-10 h-10 text-coral-400"></i>
+            </div>
+
+            <!-- Title -->
+            <h1 class="font-display font-semibold text-2xl md:text-3xl text-warm-100 mb-4 tracking-tight"><%= title %></h1>
+
+            <!-- Message -->
+            <p class="text-warm-400 text-sm md:text-base leading-relaxed mb-6 max-w-sm mx-auto"><%= message %></p>
+
+            <!-- Details (if any) -->
+            <% if (details) { %>
+                <pre class="text-left text-xs text-coral-300 p-4 rounded-xl mb-6 font-mono overflow-x-auto"
+                     style="background: rgba(251,113,133,0.06); border: 1px solid rgba(251,113,133,0.15);"><%= details %></pre>
+            <% } %>
+
+            <!-- Action -->
+            <a href="/dashboard" class="btn-primary text-white font-medium py-3.5 px-8 rounded-xl inline-flex items-center gap-2.5 no-underline text-sm">
+                <span>Try Again</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+
+        <!-- Footer link -->
+        <div class="text-center mt-8">
+            <a href="/" class="text-warm-600 hover:text-coral-400 transition-colors text-sm inline-flex items-center gap-1.5">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                Back to Home
+            </a>
+        </div>
     </div>
-  </div>
+
+    <script>lucide.createIcons();</script>
 </body>
 </html>

@@ -1,434 +1,644 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Your AI-powered resume analysis results showing skill matches and job recommendations.">
-  <title><%= title %></title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your AI-powered resume analysis results showing skill matches and job recommendations.">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Satoshi', 'sans-serif'],
+                        display: ['Clash Display', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: { primary: '#0f0f0f', secondary: '#1a1a1a', tertiary: '#242424' },
+                        warm: {
+                            50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1',
+                            400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c',
+                            800: '#292524', 900: '#1c1917',
+                        },
+                        coral: {
+                            50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af',
+                            400: '#fb7185', 500: '#f43f5e', 600: '#e11d48',
+                        },
+                        sage: {
+                            50: '#f6f7f6', 100: '#e3e7e3', 200: '#c7d2c7', 300: '#a3b5a3',
+                            400: '#7a947a', 500: '#5c7a5c', 600: '#486148',
+                        },
+                        sand: {
+                            50: '#fdfbf7', 100: '#f7f3e8', 200: '#efe5d0',
+                            300: '#e6d5b8', 400: '#d4b896',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'gradient-x': 'gradient-x 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        'gradient-x': { '0%, 100%': { 'background-position': '0% 50%' }, '50%': { 'background-position': '100% 50%' } },
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #fafaf9;
+            font-family: 'Satoshi', sans-serif;
+            overflow-x: hidden;
+        }
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 100; opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .glass {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+            border-color: rgba(251, 113, 133, 0.2);
+            transform: translateY(-4px);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #fb7185 0%, #fda4af 50%, #f7f3e8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .text-gradient-alt {
+            background: linear-gradient(135deg, #a3b5a3 0%, #d4b896 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #1c1917, #0f0f0f);
+            background-size: 400% 400%;
+            animation: gradient-x 15s ease infinite;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(100px);
+            opacity: 0.3; animation: float 8s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(251,113,133,0.2) 0%, transparent 70%);
+            top: -5%; right: -5%; animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(163,181,163,0.15) 0%, transparent 70%);
+            bottom: 30%; left: -3%; animation-delay: 2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .btn-primary::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(225,29,72,0.3); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(251,113,133,0.3); }
+        .icon-wrap {
+            background: linear-gradient(135deg, rgba(251,113,133,0.1) 0%, rgba(163,181,163,0.1) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0f0f; }
+        ::-webkit-scrollbar-thumb { background: #292524; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #44403c; }
+        ::selection { background: rgba(251,113,133,0.3); color: #fff; }
+
+        /* Match ring SVG */
+        .match-ring { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+        .match-ring svg { width: 100%; height: 100%; }
+        .match-value {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            justify-content: center; font-size: 0.9rem; font-weight: 800;
+        }
+        .match-high { color: #5c7a5c; }
+        .match-mid { color: #d4b896; }
+        .match-low { color: #fb7185; }
+
+        /* Job card animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes gradient-x {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .job-card-anim { animation: fadeInUp 0.5s ease both; }
+
+        /* Improve Modal */
+        .improve-modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .improve-modal[hidden] { display: none; }
+        .improve-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); }
+        .improve-modal-dialog {
+            position: relative; z-index: 1; width: min(920px, 100%);
+            max-height: min(88vh, 900px); overflow: auto;
+            background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; box-shadow: 0 16px 64px rgba(0,0,0,0.5);
+            padding: 24px 28px 28px;
+        }
+        .improve-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+        .improve-modal-header h2 { font-size: 1.15rem; font-weight: 700; line-height: 1.35; }
+        .improve-modal-close {
+            flex-shrink: 0; width: 36px; height: 36px; border: none; border-radius: 8px;
+            background: rgba(255,255,255,0.05); color: #a8a29e; font-size: 1.5rem;
+            line-height: 1; cursor: pointer; transition: background 0.2s, color 0.2s;
+        }
+        .improve-modal-close:hover { background: rgba(255,255,255,0.1); color: #fafaf9; }
+        .improve-modal-status { font-size: 0.875rem; color: #d4b896; margin-bottom: 12px; min-height: 1.25em; }
+        .improve-subheading {
+            font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.04em; color: #57534e; margin: 16px 0 10px;
+        }
+        .improve-summary-text { font-size: 0.95rem; color: #a8a29e; line-height: 1.55; }
+        .improve-skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .improve-skill-tag {
+            font-size: 0.78rem; padding: 6px 12px; border-radius: 999px;
+            background: rgba(251,113,133,0.12); border: 1px solid rgba(251,113,133,0.25); color: #fafaf9;
+        }
+        .improve-rows { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+        .improve-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 700px) { .improve-pair { grid-template-columns: 1fr; } }
+        .improve-col {
+            padding: 14px 16px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03);
+        }
+        .improve-col-improved { border-color: rgba(92,122,92,0.25); background: rgba(92,122,92,0.06); }
+        .improve-label {
+            display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; color: #57534e; margin-bottom: 8px;
+        }
+        .improve-body { font-size: 0.88rem; line-height: 1.5; color: #fafaf9; margin: 0; white-space: pre-wrap; word-break: break-word; }
+        .improve-empty { color: #a8a29e; font-size: 0.9rem; }
+    </style>
 </head>
-<body class="results-page">
+<body class="gradient-bg min-h-screen relative">
+    <!-- Noise overlay -->
+    <div class="noise"></div>
+    
+    <!-- Ambient orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-  <!-- Animated background -->
-  <div class="bg-gradient"></div>
-
-  <div class="container">
-    <!-- Header -->
-    <header class="results-header">
-      <a href="/" class="logo">
-        <div class="logo-icon">
-          <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
-            <rect width="40" height="40" rx="12" fill="url(#logoGrad2)"/>
-            <path d="M12 28V18L20 12L28 18V28H23V22H17V28H12Z" fill="white" fill-opacity="0.95"/>
-            <defs>
-              <linearGradient id="logoGrad2" x1="0" y1="0" x2="40" y2="40">
-                <stop stop-color="#6366f1"/>
-                <stop offset="1" stop-color="#a855f7"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <span class="logo-text">GROW<span class="logo-dot">.AI</span></span>
-      </a>
-      <a href="/" class="btn-new-scan" id="btn-new-scan">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        New Analysis
-      </a>
-    </header>
-
-    <!-- Profile summary -->
-    <section class="profile-section">
-      <div class="section-header">
-        <h1>Your Resume Profile</h1>
-        <div class="experience-badge badge-<%= profile.experience %>">
-          <%= profile.experience.charAt(0).toUpperCase() + profile.experience.slice(1) %>
-        </div>
-      </div>
-
-      <!-- Skills -->
-      <div class="profile-grid">
-        <div class="profile-card">
-          <h3 class="card-label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Skills Identified
-          </h3>
-          <div class="tag-cloud">
-            <% profile.skills.forEach(skill => { %>
-              <span class="tag tag-skill"><%= skill %></span>
-            <% }); %>
-          </div>
-        </div>
-
-        <div class="profile-card">
-          <h3 class="card-label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
-              <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Suggested Roles
-          </h3>
-          <div class="tag-cloud">
-            <% profile.roles.forEach(role => { %>
-              <span class="tag tag-role"><%= role %></span>
-            <% }); %>
-          </div>
-        </div>
-
-        <div class="profile-card">
-          <h3 class="card-label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M4 7V4H20V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M9 20H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M12 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Keywords
-          </h3>
-          <div class="tag-cloud">
-            <% profile.keywords.forEach(kw => { %>
-              <span class="tag tag-keyword"><%= kw %></span>
-            <% }); %>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stats bar -->
-    <section class="stats-bar">
-      <div class="stat-item">
-        <span class="stat-value"><%= totalJobsFound %></span>
-        <span class="stat-label">Jobs Found</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-value"><%= filteredCount %></span>
-        <span class="stat-label">Skill Matches</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-value"><%= jobs.length %></span>
-        <span class="stat-label">AI Scored</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-value"><%= profile.skills.length %></span>
-        <span class="stat-label">Skills Found</span>
-      </div>
-    </section>
-
-    <!-- Job matches -->
-    <section class="jobs-section">
-      <h2 class="section-title">AI-Matched Jobs</h2>
-
-      <% if (jobs.length === 0) { %>
-        <div class="empty-state">
-          <div class="empty-icon">🔍</div>
-          <h3>No Matching Jobs Found</h3>
-          <p>We couldn't find strong job matches right now. Try updating your resume with more specific skills.</p>
-          <a href="/" class="btn-analyze">Try Again</a>
-        </div>
-      <% } else { %>
-        <div class="job-cards">
-          <% jobs.forEach((job, index) => { %>
-            <div class="job-card" style="animation-delay: <%= index * 0.06 %>s">
-              <!-- Match header -->
-              <div class="job-card-header">
-                <div class="job-info">
-                  <h3 class="job-title"><%= job.title %></h3>
-                  <p class="job-company"><%= job.company %></p>
-                  <% if (job.salary && job.salary !== 'Not specified') { %>
-                    <p class="job-salary">💰 <%= job.salary %></p>
-                  <% } %>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 no-underline">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center shadow-lg shadow-coral-500/20">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
                 </div>
-                <div class="match-ring match-<%= job.match_percentage >= 70 ? 'high' : (job.match_percentage >= 40 ? 'mid' : 'low') %>">
-                  <svg viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="6"/>
-                    <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="6"
-                      stroke-dasharray="<%= (job.match_percentage / 100) * 213.6 %> 213.6"
-                      stroke-linecap="round" transform="rotate(-90 40 40)"/>
-                  </svg>
-                  <span class="match-value"><%= job.match_percentage %>%</span>
-                </div>
-              </div>
+                <span class="font-display font-semibold text-xl tracking-tight text-warm-100">GROW<span class="text-coral-400">.AI</span></span>
+            </a>
+            
+            <a href="/dashboard" class="btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-flex items-center gap-2 no-underline">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                New Analysis
+            </a>
+        </div>
+    </nav>
 
-              <!-- Reason -->
-              <p class="job-reason"><%= job.reason %></p>
+    <!-- Main Content -->
+    <main class="relative z-10 pt-28 pb-20 px-6">
+        <div class="max-w-6xl mx-auto">
 
-              <!-- Skills comparison -->
-              <div class="skills-comparison">
-                <div class="skill-group skill-matched">
-                  <h4>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M20 6L9 17L4 12" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Matched
-                  </h4>
-                  <div class="skill-tags">
-                    <% job.matched_skills.forEach(s => { %>
-                      <span class="mini-tag matched"><%= s %></span>
-                    <% }); %>
-                    <% if (job.matched_skills.length === 0) { %>
-                      <span class="mini-tag none">None</span>
-                    <% } %>
-                  </div>
+            <!-- Page Header -->
+            <div class="text-center mb-12 animate-fade-in">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
+                    <span class="w-2 h-2 rounded-full bg-sage-400 animate-pulse"></span>
+                    <span class="text-xs font-semibold tracking-widest text-sage-300 uppercase">Analysis Complete</span>
                 </div>
-                <div class="skill-group skill-missing">
-                  <h4>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M18 6L6 18M6 6L18 18" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"/>
-                    </svg>
-                    Missing
-                  </h4>
-                  <div class="skill-tags">
-                    <% job.missing_skills.forEach(s => { %>
-                      <span class="mini-tag missing"><%= s %></span>
-                    <% }); %>
-                    <% if (job.missing_skills.length === 0) { %>
-                      <span class="mini-tag perfect">All matched!</span>
-                    <% } %>
-                  </div>
+                <h1 class="font-display font-semibold text-4xl md:text-5xl tracking-tight text-warm-100 mb-3">
+                    Your Resume Profile
+                </h1>
+                <div class="inline-flex items-center gap-2 mt-3">
+                    <% 
+                        var expColor = 'coral';
+                        var expBg = 'rgba(251,113,133,0.1)';
+                        var expBorder = 'rgba(251,113,133,0.25)';
+                        if (profile.experience === 'experienced') { expColor = 'sage'; expBg = 'rgba(92,122,92,0.1)'; expBorder = 'rgba(92,122,92,0.25)'; }
+                        else if (profile.experience === 'intermediate') { expColor = 'sand'; expBg = 'rgba(212,184,150,0.1)'; expBorder = 'rgba(212,184,150,0.25)'; }
+                    %>
+                    <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider"
+                          style="background: <%= expBg %>; border: 1px solid <%= expBorder %>; color: <%= expColor === 'coral' ? '#fb7185' : (expColor === 'sage' ? '#a3b5a3' : '#d4b896') %>;">
+                        <%= profile.experience.charAt(0).toUpperCase() + profile.experience.slice(1) %>
+                    </span>
                 </div>
-              </div>
-
-              <div class="job-card-actions">
-                <button type="button" class="btn-improve" onclick="improveResume(<%= index %>)">Improve Resume for this Job</button>
-                <a href="<%= job.apply_url %>" target="_blank" rel="noopener noreferrer" class="btn-apply" id="apply-btn-<%= index %>">
-                  Apply Now
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-              </div>
             </div>
-          <% }); %>
+
+            <!-- Profile Cards -->
+            <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-10 animate-slide-up">
+                <!-- Skills -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg icon-wrap flex items-center justify-center">
+                            <i data-lucide="star" class="w-4 h-4 text-coral-400"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-warm-400">Skills Identified</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <% profile.skills.forEach(function(skill) { %>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold" 
+                                  style="background: rgba(251,113,133,0.12); color: #fda4af; border: 1px solid rgba(251,113,133,0.2);">
+                                <%= skill %>
+                            </span>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <!-- Roles -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg icon-wrap flex items-center justify-center">
+                            <i data-lucide="briefcase" class="w-4 h-4 text-sage-400"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-warm-400">Suggested Roles</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <% profile.roles.forEach(function(role) { %>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                  style="background: rgba(163,181,163,0.12); color: #c7d2c7; border: 1px solid rgba(163,181,163,0.2);">
+                                <%= role %>
+                            </span>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <!-- Keywords -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg icon-wrap flex items-center justify-center">
+                            <i data-lucide="type" class="w-4 h-4 text-sand-400"></i>
+                        </div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-warm-400">Keywords</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <% profile.keywords.forEach(function(kw) { %>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                  style="background: rgba(212,184,150,0.1); color: #e6d5b8; border: 1px solid rgba(212,184,150,0.2);">
+                                <%= kw %>
+                            </span>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="glass rounded-2xl p-6 md:p-8 max-w-4xl mx-auto mb-12 animate-slide-up" style="animation-delay: 0.1s">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div class="group">
+                        <div class="text-3xl md:text-4xl font-display font-semibold text-gradient mb-1 group-hover:scale-110 transition-transform"><%= totalJobsFound %></div>
+                        <div class="text-xs text-warm-500 font-semibold uppercase tracking-wider">Jobs Found</div>
+                    </div>
+                    <div class="group md:border-l md:border-white/5 md:pl-8">
+                        <div class="text-3xl md:text-4xl font-display font-semibold text-warm-100 mb-1 group-hover:text-coral-400 transition-colors"><%= filteredCount %></div>
+                        <div class="text-xs text-warm-500 font-semibold uppercase tracking-wider">Skill Matches</div>
+                    </div>
+                    <div class="group md:border-l md:border-white/5 md:pl-8">
+                        <div class="text-3xl md:text-4xl font-display font-semibold text-warm-100 mb-1 group-hover:text-sage-400 transition-colors"><%= jobs.length %></div>
+                        <div class="text-xs text-warm-500 font-semibold uppercase tracking-wider">AI Scored</div>
+                    </div>
+                    <div class="group md:border-l md:border-white/5 md:pl-8">
+                        <div class="text-3xl md:text-4xl font-display font-semibold text-warm-100 mb-1 group-hover:text-sand-400 transition-colors"><%= profile.skills.length %></div>
+                        <div class="text-xs text-warm-500 font-semibold uppercase tracking-wider">Skills Found</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Matches Section -->
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-xl icon-wrap flex items-center justify-center">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-coral-400"></i>
+                    </div>
+                    <h2 class="font-display font-semibold text-2xl text-warm-100">AI-Matched Jobs</h2>
+                </div>
+
+                <% if (jobs.length === 0) { %>
+                    <!-- Empty State -->
+                    <div class="glass-card rounded-2xl p-12 text-center">
+                        <div class="w-20 h-20 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center">
+                            <i data-lucide="search" class="w-10 h-10 text-warm-500"></i>
+                        </div>
+                        <h3 class="text-xl font-display font-medium text-warm-200 mb-3">No Matching Jobs Found</h3>
+                        <p class="text-warm-500 text-sm max-w-md mx-auto mb-8">
+                            We couldn't find strong job matches right now. Try updating your resume with more specific skills.
+                        </p>
+                        <a href="/dashboard" class="btn-primary text-white font-medium py-3 px-8 rounded-xl inline-flex items-center gap-2 no-underline">
+                            <span>Try Again</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                <% } else { %>
+                    <div class="flex flex-col gap-5">
+                        <% jobs.forEach(function(job, index) { %>
+                            <div class="glass-card rounded-2xl p-6 md:p-8 job-card-anim" style="animation-delay: <%= index * 0.06 %>s">
+                                <!-- Header -->
+                                <div class="flex justify-between items-start gap-5 mb-4">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-lg font-display font-semibold text-warm-100 mb-1 leading-tight"><%= job.title %></h3>
+                                        <p class="text-sm text-warm-400 mb-1"><%= job.company %></p>
+                                        <% if (job.salary && job.salary !== 'Not specified') { %>
+                                            <p class="text-sm text-sage-400 font-semibold flex items-center gap-1">
+                                                <i data-lucide="coins" class="w-3.5 h-3.5"></i>
+                                                <%= job.salary %>
+                                            </p>
+                                        <% } %>
+                                    </div>
+                                    <div class="match-ring match-<%= job.match_percentage >= 70 ? 'high' : (job.match_percentage >= 40 ? 'mid' : 'low') %>">
+                                        <svg viewBox="0 0 80 80">
+                                            <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="6"/>
+                                            <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="6"
+                                                stroke-dasharray="<%= (job.match_percentage / 100) * 213.6 %> 213.6"
+                                                stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                                        </svg>
+                                        <span class="match-value"><%= job.match_percentage %>%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Reason -->
+                                <p class="text-sm text-warm-400 leading-relaxed mb-5 pl-3 border-l-2 border-warm-800"><%= job.reason %></p>
+
+                                <!-- Skills comparison -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                    <div>
+                                        <div class="flex items-center gap-1.5 mb-2">
+                                            <i data-lucide="check" class="w-3.5 h-3.5 text-sage-400"></i>
+                                            <span class="text-[0.7rem] font-bold uppercase tracking-wider text-warm-500">Matched</span>
+                                        </div>
+                                        <div class="flex flex-wrap gap-1.5">
+                                            <% job.matched_skills.forEach(function(s) { %>
+                                                <span class="px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold"
+                                                      style="background: rgba(92,122,92,0.1); color: #a3b5a3; border: 1px solid rgba(92,122,92,0.2);">
+                                                    <%= s %>
+                                                </span>
+                                            <% }); %>
+                                            <% if (job.matched_skills.length === 0) { %>
+                                                <span class="px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold text-warm-600" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">None</span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-1.5 mb-2">
+                                            <i data-lucide="x" class="w-3.5 h-3.5 text-coral-400"></i>
+                                            <span class="text-[0.7rem] font-bold uppercase tracking-wider text-warm-500">Missing</span>
+                                        </div>
+                                        <div class="flex flex-wrap gap-1.5">
+                                            <% job.missing_skills.forEach(function(s) { %>
+                                                <span class="px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold"
+                                                      style="background: rgba(251,113,133,0.08); color: #fda4af; border: 1px solid rgba(251,113,133,0.15);">
+                                                    <%= s %>
+                                                </span>
+                                            <% }); %>
+                                            <% if (job.missing_skills.length === 0) { %>
+                                                <span class="px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold text-sage-400" style="background: rgba(92,122,92,0.08); border: 1px solid rgba(92,122,92,0.15);">All matched!</span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex flex-wrap gap-3">
+                                    <button type="button" class="btn-secondary px-5 py-2.5 rounded-xl text-sm font-medium text-warm-200 cursor-pointer" onclick="improveResume(<%= index %>)" id="improve-btn-<%= index %>">
+                                        <span class="flex items-center gap-2">
+                                            <i data-lucide="wand-2" class="w-4 h-4"></i>
+                                            Improve Resume
+                                        </span>
+                                    </button>
+                                    <a href="<%= job.apply_url %>" target="_blank" rel="noopener noreferrer" class="btn-primary text-white font-medium py-2.5 px-5 rounded-xl text-sm inline-flex items-center gap-2 no-underline" id="apply-btn-<%= index %>">
+                                        Apply Now
+                                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </div>
+
         </div>
-      <% } %>
-    </section>
+    </main>
 
     <!-- Improve resume modal -->
     <div id="improve-modal" class="improve-modal" hidden aria-hidden="true">
-      <div class="improve-modal-backdrop" onclick="closeImproveModal()"></div>
-      <div class="improve-modal-dialog" role="dialog" aria-labelledby="improve-modal-title">
-        <div class="improve-modal-header">
-          <h2 id="improve-modal-title">Improved resume for this job</h2>
-          <button type="button" class="improve-modal-close" onclick="closeImproveModal()" aria-label="Close">&times;</button>
+        <div class="improve-modal-backdrop" onclick="closeImproveModal()"></div>
+        <div class="improve-modal-dialog" role="dialog" aria-labelledby="improve-modal-title">
+            <div class="improve-modal-header">
+                <h2 id="improve-modal-title">Improved resume for this job</h2>
+                <button type="button" class="improve-modal-close" onclick="closeImproveModal()" aria-label="Close">&times;</button>
+            </div>
+            <p id="improve-modal-status" class="improve-modal-status"></p>
+            <div id="improve-modal-summary-wrap" class="improve-summary-wrap" hidden>
+                <h3 class="improve-subheading">Suggested summary</h3>
+                <p id="improve-modal-summary" class="improve-summary-text"></p>
+            </div>
+            <div id="improve-modal-skills-wrap" class="improve-skills-wrap" hidden>
+                <h3 class="improve-subheading">Skills to highlight</h3>
+                <div id="improve-modal-skills" class="improve-skill-tags"></div>
+            </div>
+            <h3 class="improve-subheading">Experience: original vs improved</h3>
+            <div id="improve-modal-rows" class="improve-rows"></div>
         </div>
-        <p id="improve-modal-status" class="improve-modal-status"></p>
-        <div id="improve-modal-summary-wrap" class="improve-summary-wrap" hidden>
-          <h3 class="improve-subheading">Suggested summary</h3>
-          <p id="improve-modal-summary" class="improve-summary-text"></p>
-        </div>
-        <div id="improve-modal-skills-wrap" class="improve-skills-wrap" hidden>
-          <h3 class="improve-subheading">Skills to highlight</h3>
-          <div id="improve-modal-skills" class="improve-skill-tags"></div>
-        </div>
-        <h3 class="improve-subheading">Experience: original vs improved</h3>
-        <div id="improve-modal-rows" class="improve-rows"></div>
-      </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-white/5 py-12 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                </div>
+                <span class="font-display font-semibold text-lg text-warm-100">GROW<span class="text-coral-400">.AI</span></span>
+            </div>
+            <div class="text-sm text-warm-600 font-normal">
+                Built with ❤️ using Node.js, Gemini AI & Adzuna API
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-warm-600 hover:text-coral-400 transition-colors duration-300"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                <a href="#" class="text-warm-600 hover:text-coral-400 transition-colors duration-300"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                <a href="#" class="text-warm-600 hover:text-coral-400 transition-colors duration-300"><i data-lucide="github" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Improve resume data + script -->
     <script type="application/json" id="improve-page-data"><%- improvePageJson %></script>
     <script>
-      (function () {
-        var dataEl = document.getElementById('improve-page-data');
-        var ctx = { resumeText: '', jobs: [] };
-        if (dataEl && dataEl.textContent) {
-          try {
-            ctx = JSON.parse(dataEl.textContent);
-            // #region agent log
-            fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
-              body: JSON.stringify({
-                sessionId: 'b73140',
-                runId: 'post-fix-v2',
-                hypothesisId: 'H2',
-                location: 'results.ejs:ctx-after-parse',
-                message: 'client ctx from improve-page-data',
-                data: {
-                  resumeLen: (ctx.resumeText && String(ctx.resumeText).length) || 0,
-                  resumeTrimLen: (ctx.resumeText && String(ctx.resumeText).trim().length) || 0,
-                  jobsCount: (ctx.jobs && ctx.jobs.length) || 0,
-                  jsonSnippetLen: dataEl.textContent.length
-                },
-                timestamp: Date.now()
-              })
-            }).catch(function () {});
-            // #endregion
-          } catch (e) {
-            console.error(e);
-            // #region agent log
-            fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
-              body: JSON.stringify({
-                sessionId: 'b73140',
-                runId: 'post-fix',
-                hypothesisId: 'H3',
-                location: 'results.ejs:parse-error',
-                message: 'JSON.parse failed for improve-page-data',
-                data: { err: String(e && e.message), rawLen: dataEl.textContent.length },
-                timestamp: Date.now()
-              })
-            }).catch(function () {});
-            // #endregion
-          }
-        }
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-        window.closeImproveModal = function () {
-          var modal = document.getElementById('improve-modal');
-          if (!modal) return;
-          modal.hidden = true;
-          modal.setAttribute('aria-hidden', 'true');
-        };
-
-        function openImproveModal() {
-          var modal = document.getElementById('improve-modal');
-          if (!modal) return;
-          modal.hidden = false;
-          modal.setAttribute('aria-hidden', 'false');
-        }
-
-        function setStatus(msg) {
-          var el = document.getElementById('improve-modal-status');
-          if (el) el.textContent = msg || '';
-        }
-
-        function renderPayload(data) {
-          var rows = document.getElementById('improve-modal-rows');
-          var sumWrap = document.getElementById('improve-modal-summary-wrap');
-          var sumEl = document.getElementById('improve-modal-summary');
-          var skWrap = document.getElementById('improve-modal-skills-wrap');
-          var skEl = document.getElementById('improve-modal-skills');
-          if (!rows) return;
-
-          rows.innerHTML = '';
-          var list = data.improvements || data.bullets || [];
-          if (data.summary && sumEl && sumWrap) {
-            sumEl.textContent = data.summary;
-            sumWrap.hidden = false;
-          } else if (sumWrap) sumWrap.hidden = true;
-
-          if (skEl && skWrap) {
-            skEl.innerHTML = '';
-            var skills = data.skills || [];
-            if (skills.length) {
-              skWrap.hidden = false;
-              skills.forEach(function (s) {
-                var span = document.createElement('span');
-                span.className = 'improve-skill-tag';
-                span.textContent = s;
-                skEl.appendChild(span);
-              });
-            } else skWrap.hidden = true;
-          }
-
-          if (!list.length) {
-            rows.innerHTML = '<p class="improve-empty">No bullet comparisons returned. Try again or check your resume formatting.</p>';
-            return;
-          }
-
-          list.forEach(function (pair) {
-            var row = document.createElement('div');
-            row.className = 'improve-pair';
-            var o = document.createElement('div');
-            o.className = 'improve-col improve-col-original';
-            o.innerHTML = '<span class="improve-label">Original</span><p class="improve-body"></p>';
-            o.querySelector('.improve-body').textContent = pair.original || '—';
-
-            var i = document.createElement('div');
-            i.className = 'improve-col improve-col-improved';
-            i.innerHTML = '<span class="improve-label">Improved</span><p class="improve-body"></p>';
-            i.querySelector('.improve-body').textContent = pair.improved || '—';
-
-            row.appendChild(o);
-            row.appendChild(i);
-            rows.appendChild(row);
-          });
-        }
-
-        window.improveResume = async function (jobIndex) {
-          var job = ctx.jobs[jobIndex];
-          // #region agent log
-          fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
-            body: JSON.stringify({
-              sessionId: 'b73140',
-              runId: 'post-fix-v2',
-              hypothesisId: 'H4',
-              location: 'results.ejs:improveResume-click',
-              message: 'improve button clicked',
-              data: {
-                jobIndex: jobIndex,
-                hasJob: !!job,
-                resumeLen: (ctx.resumeText && String(ctx.resumeText).length) || 0,
-                resumeTrimLen: (ctx.resumeText && String(ctx.resumeText).trim().length) || 0
-              },
-              timestamp: Date.now()
-            })
-          }).catch(function () {});
-          // #endregion
-          if (!job) {
-            alert('Job not found.');
-            return;
-          }
-          if (!ctx.resumeText || !String(ctx.resumeText).trim()) {
-            alert('Resume text is not available. Upload your resume again.');
-            return;
-          }
-
-          openImproveModal();
-          setStatus('Improving your resume…');
-          document.getElementById('improve-modal-summary-wrap').hidden = true;
-          document.getElementById('improve-modal-skills-wrap').hidden = true;
-          document.getElementById('improve-modal-rows').innerHTML = '';
-
-          var jobDescription = [
-            job.description,
-            job.title ? 'Job title: ' + job.title : '',
-            job.apply_url ? 'Apply URL: ' + job.apply_url : ''
-          ].filter(Boolean).join('\n\n');
-
-          try {
-            var res = await fetch('/improve-resume', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                resumeText: ctx.resumeText,
-                jobDescription: jobDescription
-              })
-            });
-            var data = await res.json().catch(function () { return {}; });
-            if (!res.ok) {
-              throw new Error(data.error || data.message || 'Request failed');
+        (function () {
+            var dataEl = document.getElementById('improve-page-data');
+            var ctx = { resumeText: '', jobs: [] };
+            if (dataEl && dataEl.textContent) {
+                try { ctx = JSON.parse(dataEl.textContent); } catch (e) { console.error(e); }
             }
-            setStatus('');
-            renderPayload(data);
-          } catch (err) {
-            setStatus(err.message || 'Something went wrong.');
-            document.getElementById('improve-modal-rows').innerHTML = '';
-          }
-        };
 
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape') window.closeImproveModal();
+            window.closeImproveModal = function () {
+                var modal = document.getElementById('improve-modal');
+                if (!modal) return;
+                modal.hidden = true;
+                modal.setAttribute('aria-hidden', 'true');
+            };
+
+            function openImproveModal() {
+                var modal = document.getElementById('improve-modal');
+                if (!modal) return;
+                modal.hidden = false;
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function setStatus(msg) {
+                var el = document.getElementById('improve-modal-status');
+                if (el) el.textContent = msg || '';
+            }
+
+            function renderPayload(data) {
+                var rows = document.getElementById('improve-modal-rows');
+                var sumWrap = document.getElementById('improve-modal-summary-wrap');
+                var sumEl = document.getElementById('improve-modal-summary');
+                var skWrap = document.getElementById('improve-modal-skills-wrap');
+                var skEl = document.getElementById('improve-modal-skills');
+                if (!rows) return;
+
+                rows.innerHTML = '';
+                var list = data.improvements || data.bullets || [];
+                if (data.summary && sumEl && sumWrap) {
+                    sumEl.textContent = data.summary;
+                    sumWrap.hidden = false;
+                } else if (sumWrap) sumWrap.hidden = true;
+
+                if (skEl && skWrap) {
+                    skEl.innerHTML = '';
+                    var skills = data.skills || [];
+                    if (skills.length) {
+                        skWrap.hidden = false;
+                        skills.forEach(function (s) {
+                            var span = document.createElement('span');
+                            span.className = 'improve-skill-tag';
+                            span.textContent = s;
+                            skEl.appendChild(span);
+                        });
+                    } else skWrap.hidden = true;
+                }
+
+                if (!list.length) {
+                    rows.innerHTML = '<p class="improve-empty">No bullet comparisons returned. Try again or check your resume formatting.</p>';
+                    return;
+                }
+
+                list.forEach(function (pair) {
+                    var row = document.createElement('div');
+                    row.className = 'improve-pair';
+                    var o = document.createElement('div');
+                    o.className = 'improve-col improve-col-original';
+                    o.innerHTML = '<span class="improve-label">Original</span><p class="improve-body"></p>';
+                    o.querySelector('.improve-body').textContent = pair.original || '—';
+
+                    var i = document.createElement('div');
+                    i.className = 'improve-col improve-col-improved';
+                    i.innerHTML = '<span class="improve-label">Improved</span><p class="improve-body"></p>';
+                    i.querySelector('.improve-body').textContent = pair.improved || '—';
+
+                    row.appendChild(o);
+                    row.appendChild(i);
+                    rows.appendChild(row);
+                });
+            }
+
+            window.improveResume = async function (jobIndex) {
+                var job = ctx.jobs[jobIndex];
+                if (!job) { alert('Job not found.'); return; }
+                if (!ctx.resumeText || !String(ctx.resumeText).trim()) {
+                    alert('Resume text is not available. Upload your resume again.');
+                    return;
+                }
+
+                openImproveModal();
+                setStatus('Improving your resume…');
+                document.getElementById('improve-modal-summary-wrap').hidden = true;
+                document.getElementById('improve-modal-skills-wrap').hidden = true;
+                document.getElementById('improve-modal-rows').innerHTML = '';
+
+                var jobDescription = [
+                    job.description,
+                    job.title ? 'Job title: ' + job.title : '',
+                    job.apply_url ? 'Apply URL: ' + job.apply_url : ''
+                ].filter(Boolean).join('\n\n');
+
+                try {
+                    var res = await fetch('/improve-resume', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ resumeText: ctx.resumeText, jobDescription: jobDescription })
+                    });
+                    var data = await res.json().catch(function () { return {}; });
+                    if (!res.ok) throw new Error(data.error || data.message || 'Request failed');
+                    setStatus('');
+                    renderPayload(data);
+                } catch (err) {
+                    setStatus(err.message || 'Something went wrong.');
+                    document.getElementById('improve-modal-rows').innerHTML = '';
+                }
+            };
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') window.closeImproveModal();
+            });
+        })();
+
+        // Parallax effect for orbs
+        document.addEventListener('mousemove', function(e) {
+            var orbs = document.querySelectorAll('.orb');
+            orbs.forEach(function(orb, index) {
+                var speed = (index + 1) * 15;
+                var xOffset = (window.innerWidth / 2 - e.clientX) / speed;
+                var yOffset = (window.innerHeight / 2 - e.clientY) / speed;
+                orb.style.transform = 'translate(' + xOffset + 'px, ' + yOffset + 'px)';
+            });
         });
-      })();
     </script>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <p>Built with ❤️ using Node.js, Gemini AI & Adzuna API</p>
-      <p class="footer-sub">GROW.AI — AI Resume Analyzer</p>
-    </footer>
-  </div>
-
 </body>
 </html>

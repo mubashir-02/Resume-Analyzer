@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GROW.AI — Upload your resume and get AI-powered job matching with skill analysis and career recommendations.">
-    <title><%= title %></title>
+    <meta name="description"
+        content="GROW.AI — Upload your resume and get AI-powered job matching with skill analysis and career recommendations.">
+    <title>
+        <%= title %>
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&f[]=clash-display@400,500,600,700&display=swap"
+        rel="stylesheet">
+
     <script>
         tailwind.config = {
             theme: {
@@ -58,7 +64,7 @@
             }
         }
     </script>
-    
+
     <style>
         body {
             background-color: #0f0f0f;
@@ -66,190 +72,363 @@
             font-family: 'Satoshi', sans-serif;
             overflow-x: hidden;
         }
+
         .noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 100; opacity: 0.025;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.025;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
+
         .glass {
             background: rgba(26, 26, 26, 0.6);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .glass-card:hover {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
             border-color: rgba(251, 113, 133, 0.2);
             transform: translateY(-4px);
         }
+
         .text-gradient {
             background: linear-gradient(135deg, #fb7185 0%, #fda4af 50%, #f7f3e8 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
         .text-gradient-alt {
             background: linear-gradient(135deg, #a3b5a3 0%, #d4b896 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
         .gradient-bg {
             background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #1c1917, #0f0f0f);
             background-size: 400% 400%;
             animation: gradient-x 15s ease infinite;
         }
+
         .orb {
-            position: absolute; border-radius: 50%; filter: blur(100px);
-            opacity: 0.4; animation: float 8s ease-in-out infinite;
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: float 8s ease-in-out infinite;
         }
+
         .orb-1 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(251,113,133,0.25) 0%, transparent 70%);
-            top: -10%; right: -10%; animation-delay: 0s;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(251, 113, 133, 0.25) 0%, transparent 70%);
+            top: -10%;
+            right: -10%;
+            animation-delay: 0s;
         }
+
         .orb-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(163,181,163,0.2) 0%, transparent 70%);
-            bottom: 20%; left: -5%; animation-delay: 2s;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(163, 181, 163, 0.2) 0%, transparent 70%);
+            bottom: 20%;
+            left: -5%;
+            animation-delay: 2s;
         }
+
         .orb-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(212,184,150,0.2) 0%, transparent 70%);
-            top: 40%; right: 20%; animation-delay: 4s;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 184, 150, 0.2) 0%, transparent 70%);
+            top: 40%;
+            right: 20%;
+            animation-delay: 4s;
         }
+
         .upload-zone {
-            background: linear-gradient(135deg, rgba(251,113,133,0.05) 0%, rgba(163,181,163,0.05) 100%);
-            border: 2px dashed rgba(251,113,133,0.3);
+            background: linear-gradient(135deg, rgba(251, 113, 133, 0.05) 0%, rgba(163, 181, 163, 0.05) 100%);
+            border: 2px dashed rgba(251, 113, 133, 0.3);
             transition: all 0.4s ease;
         }
-        .upload-zone:hover, .upload-zone.drag-over {
-            background: linear-gradient(135deg, rgba(251,113,133,0.1) 0%, rgba(163,181,163,0.1) 100%);
-            border-color: rgba(251,113,133,0.6);
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            background: linear-gradient(135deg, rgba(251, 113, 133, 0.1) 0%, rgba(163, 181, 163, 0.1) 100%);
+            border-color: rgba(251, 113, 133, 0.6);
             transform: translateY(-2px);
         }
+
         .btn-primary {
             background: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
-            position: relative; overflow: hidden; transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
+
         .btn-primary::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s;
         }
-        .btn-primary:hover::before { left: 100%; }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 40px rgba(225, 29, 72, 0.3);
         }
+
         .btn-secondary {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
+
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(251,113,133,0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(251, 113, 133, 0.3);
         }
+
         .icon-wrap {
-            background: linear-gradient(135deg, rgba(251,113,133,0.1) 0%, rgba(163,181,163,0.1) 100%);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(135deg, rgba(251, 113, 133, 0.1) 0%, rgba(163, 181, 163, 0.1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f0f0f; }
-        ::-webkit-scrollbar-thumb { background: #292524; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #44403c; }
-        ::selection { background: rgba(251,113,133,0.3); color: #fff; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #292524;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #44403c;
+        }
+
+        ::selection {
+            background: rgba(251, 113, 133, 0.3);
+            color: #fff;
+        }
 
         /* Loading overlay */
         .loading-overlay {
-            position: fixed; inset: 0;
-            background: rgba(15,15,15,0.92);
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 15, 15, 0.92);
             backdrop-filter: blur(16px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; opacity: 0; visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
             transition: all 0.4s ease;
         }
-        .loading-overlay.active { opacity: 1; visibility: visible; }
-        .loading-card {
-            text-align: center; max-width: 400px; padding: 48px 40px;
-            background: rgba(26,26,26,0.8);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 24px; backdrop-filter: blur(20px);
-            box-shadow: 0 16px 64px rgba(0,0,0,0.5);
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
-        .spinner-container { position: relative; width: 80px; height: 80px; margin: 0 auto 28px; }
+
+        .loading-card {
+            text-align: center;
+            max-width: 400px;
+            padding: 48px 40px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 28px;
+        }
+
         .spinner-ring {
-            position: absolute; inset: 0; border-radius: 50%;
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
             border: 3px solid transparent;
-            border-top-color: #fb7185; border-right-color: #fda4af;
+            border-top-color: #fb7185;
+            border-right-color: #fda4af;
             animation: spin 1.2s linear infinite;
         }
+
         .spinner-icon {
-            position: absolute; inset: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; animation: pulse-icon 2s ease-in-out infinite;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            animation: pulse-icon 2s ease-in-out infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse-icon { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse-icon {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
+
         @keyframes gradient-x {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
-        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
         @keyframes slideUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .loading-step {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 0.85rem; color: #57534e; transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #57534e;
+            transition: color 0.3s;
         }
-        .loading-step.active { color: #fafaf9; }
+
+        .loading-step.active {
+            color: #fafaf9;
+        }
+
         .step-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #57534e; flex-shrink: 0; transition: all 0.3s;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #57534e;
+            flex-shrink: 0;
+            transition: all 0.3s;
         }
+
         .loading-step.active .step-dot {
             background: #fb7185;
-            box-shadow: 0 0 8px rgba(251,113,133,0.5);
+            box-shadow: 0 0 8px rgba(251, 113, 133, 0.5);
             animation: pulse-icon 1.5s ease-in-out infinite;
         }
     </style>
 </head>
+
 <body class="gradient-bg min-h-screen relative">
     <!-- Noise overlay -->
     <div class="noise"></div>
-    
+
     <!-- Ambient orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
-    
+
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
         <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center shadow-lg shadow-coral-500/20">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center shadow-lg shadow-coral-500/20">
                     <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
                 </div>
-                <span class="font-display font-semibold text-xl tracking-tight text-warm-100">GROW<span class="text-coral-400">.AI</span></span>
+                <span class="font-display font-semibold text-xl tracking-tight text-warm-100">GROW<span
+                        class="text-coral-400">.AI</span></span>
             </div>
-            
+
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-warm-400">
                 <a href="#features" class="hover:text-warm-100 transition-colors duration-300">Features</a>
                 <a href="#how-it-works" class="hover:text-warm-100 transition-colors duration-300">How it Works</a>
                 <a href="#stats" class="hover:text-warm-100 transition-colors duration-300">Stats</a>
             </div>
-            
-            <a href="/login" class="btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-block">
+
+            <a href="/" class=" btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-block">
                 Sign In
             </a>
         </div>
@@ -258,29 +437,34 @@
     <!-- Main Content -->
     <main class="relative z-10 pt-32 pb-20 px-6">
         <div class="max-w-6xl mx-auto">
-            
+
             <!-- Hero Section -->
             <div class="text-center mb-20 relative">
                 <!-- Badge -->
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-fade-in">
                     <span class="w-2 h-2 rounded-full bg-coral-400 animate-pulse"></span>
-                    <span class="text-xs font-semibold tracking-widest text-coral-300 uppercase font-sans">AI-Powered Career Intelligence</span>
+                    <span class="text-xs font-semibold tracking-widest text-coral-300 uppercase font-sans">AI-Powered
+                        Career Intelligence</span>
                 </div>
-                
+
                 <!-- Main Headline -->
-                <h1 class="font-display font-semibold text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8 tracking-tight animate-slide-up">
+                <h1
+                    class="font-display font-semibold text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8 tracking-tight animate-slide-up">
                     <span class="block text-warm-100 mb-2">Analyze Your Resume</span>
                     <span class="block text-gradient">Find Your Perfect Job</span>
                 </h1>
-                
+
                 <!-- Subheadline -->
-                <p class="text-lg md:text-xl text-warm-400 max-w-2xl mx-auto leading-relaxed mb-12 font-normal animate-slide-up" style="animation-delay: 0.1s">
-                    Upload your resume and let our AI extract your skills, match you with top jobs, 
-                    and show you exactly where you stand — <span class="text-warm-200 font-medium">all in seconds</span>.
+                <p class="text-lg md:text-xl text-warm-400 max-w-2xl mx-auto leading-relaxed mb-12 font-normal animate-slide-up"
+                    style="animation-delay: 0.1s">
+                    Upload your resume and let our AI extract your skills, match you with top jobs,
+                    and show you exactly where you stand — <span class="text-warm-200 font-medium">all in
+                        seconds</span>.
                 </p>
-                
+
                 <!-- Trust Badges -->
-                <div class="flex items-center justify-center gap-8 text-sm text-warm-500 mb-16 animate-slide-up flex-wrap" style="animation-delay: 0.2s">
+                <div class="flex items-center justify-center gap-8 text-sm text-warm-500 mb-16 animate-slide-up flex-wrap"
+                    style="animation-delay: 0.2s">
                     <div class="flex items-center gap-2">
                         <i data-lucide="shield-check" class="w-4 h-4 text-sage-400"></i>
                         <span>Bank-level Security</span>
@@ -300,19 +484,26 @@
             <div class="max-w-3xl mx-auto mb-24 animate-slide-up" style="animation-delay: 0.3s">
                 <div class="glass rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl shadow-black/50">
                     <!-- Subtle gradient overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-coral-500/5 via-transparent to-sage-500/5 pointer-events-none"></div>
-                    
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-coral-500/5 via-transparent to-sage-500/5 pointer-events-none">
+                    </div>
+
                     <div class="relative z-10">
                         <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
                             <!-- Upload Zone -->
-                            <div id="drop-zone" class="upload-zone rounded-2xl p-12 text-center cursor-pointer group mb-6">
-                                <input type="file" name="resume" id="resume-input" accept=".pdf,application/pdf" required class="hidden">
-                                
-                                <div class="w-20 h-20 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                                    <i data-lucide="upload-cloud" class="w-10 h-10 text-coral-400 group-hover:text-coral-300 transition-colors"></i>
+                            <div id="drop-zone"
+                                class="upload-zone rounded-2xl p-12 text-center cursor-pointer group mb-6">
+                                <input type="file" name="resume" id="resume-input" accept=".pdf,application/pdf"
+                                    required class="hidden">
+
+                                <div
+                                    class="w-20 h-20 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                    <i data-lucide="upload-cloud"
+                                        class="w-10 h-10 text-coral-400 group-hover:text-coral-300 transition-colors"></i>
                                 </div>
-                                
-                                <h3 class="text-xl font-display font-medium text-warm-100 mb-2 group-hover:text-coral-300 transition-colors">
+
+                                <h3
+                                    class="text-xl font-display font-medium text-warm-100 mb-2 group-hover:text-coral-300 transition-colors">
                                     Drag & drop your resume here
                                 </h3>
                                 <p class="text-warm-500 text-sm font-normal">
@@ -321,7 +512,8 @@
                             </div>
 
                             <!-- Selected file display -->
-                            <div id="file-selected" class="hidden mb-6 p-4 rounded-xl bg-white/5 border border-white/10">
+                            <div id="file-selected"
+                                class="hidden mb-6 p-4 rounded-xl bg-white/5 border border-white/10">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-3">
                                         <i data-lucide="file-text" class="w-5 h-5 text-coral-400"></i>
@@ -330,14 +522,17 @@
                                             <span id="file-size" class="text-warm-600 text-xs"></span>
                                         </div>
                                     </div>
-                                    <button type="button" id="file-remove" class="text-warm-600 hover:text-coral-400 transition-colors p-1.5 hover:bg-white/5 rounded-full">
+                                    <button type="button" id="file-remove"
+                                        class="text-warm-600 hover:text-coral-400 transition-colors p-1.5 hover:bg-white/5 rounded-full">
                                         <i data-lucide="x" class="w-4 h-4"></i>
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Analyze Button -->
-                            <button type="submit" id="btn-analyze" class="w-full btn-primary text-white font-medium py-4 px-8 rounded-xl flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none shadow-lg shadow-coral-500/25 border-none cursor-pointer" disabled>
+                            <button type="submit" id="btn-analyze"
+                                class="w-full btn-primary text-white font-medium py-4 px-8 rounded-xl flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none shadow-lg shadow-coral-500/25 border-none cursor-pointer"
+                                disabled>
                                 <span class="btn-text">Analyze My Resume</span>
                                 <i data-lucide="arrow-right" class="w-5 h-5"></i>
                             </button>
@@ -349,17 +544,20 @@
             <!-- Features Grid -->
             <div id="features" class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-24">
                 <div class="glass-card rounded-2xl p-8 text-center group reveal">
-                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                    <div
+                        class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i data-lucide="brain-circuit" class="w-8 h-8 text-coral-400"></i>
                     </div>
                     <h3 class="text-xl font-display font-medium text-warm-100 mb-3">AI Skill Extraction</h3>
                     <p class="text-warm-500 text-sm leading-relaxed font-normal">
-                        Gemini AI identifies your skills and experience level with precision, mapping them to industry standards.
+                        Gemini AI identifies your skills and experience level with precision, mapping them to industry
+                        standards.
                     </p>
                 </div>
 
                 <div class="glass-card rounded-2xl p-8 text-center group reveal" style="transition-delay: 0.1s">
-                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                    <div
+                        class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i data-lucide="target" class="w-8 h-8 text-sage-400"></i>
                     </div>
                     <h3 class="text-xl font-display font-medium text-warm-100 mb-3">Smart Job Matching</h3>
@@ -369,7 +567,8 @@
                 </div>
 
                 <div class="glass-card rounded-2xl p-8 text-center group reveal" style="transition-delay: 0.2s">
-                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                    <div
+                        class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i data-lucide="bar-chart-2" class="w-8 h-8 text-sand-400"></i>
                     </div>
                     <h3 class="text-xl font-display font-medium text-warm-100 mb-3">Gap Analysis</h3>
@@ -383,19 +582,27 @@
             <div id="stats" class="glass rounded-3xl p-8 md:p-12 max-w-4xl mx-auto mb-24 reveal">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div class="group">
-                        <div class="text-4xl md:text-5xl font-display font-semibold text-gradient mb-2 group-hover:scale-110 transition-transform">98%</div>
+                        <div
+                            class="text-4xl md:text-5xl font-display font-semibold text-gradient mb-2 group-hover:scale-110 transition-transform">
+                            98%</div>
                         <div class="text-sm text-warm-500 font-normal">Accuracy Rate</div>
                     </div>
                     <div class="group">
-                        <div class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-coral-400 transition-colors">50K+</div>
+                        <div
+                            class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-coral-400 transition-colors">
+                            50K+</div>
                         <div class="text-sm text-warm-500 font-normal">Jobs Matched</div>
                     </div>
                     <div class="group">
-                        <div class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-sage-400 transition-colors">2.5x</div>
+                        <div
+                            class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-sage-400 transition-colors">
+                            2.5x</div>
                         <div class="text-sm text-warm-500 font-normal">Interview Rate</div>
                     </div>
                     <div class="group">
-                        <div class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-sand-400 transition-colors">&lt;3s</div>
+                        <div
+                            class="text-4xl md:text-5xl font-display font-semibold text-warm-100 mb-2 group-hover:text-sand-400 transition-colors">
+                            &lt;3s</div>
                         <div class="text-sm text-warm-500 font-normal">Processing Time</div>
                     </div>
                 </div>
@@ -411,10 +618,12 @@
                     <i data-lucide="star" class="w-5 h-5 text-sand-400 fill-sand-400"></i>
                 </div>
                 <blockquote class="text-2xl md:text-3xl font-display font-medium text-warm-200 leading-tight mb-6">
-                    "GROW.AI helped me identify gaps in my resume I never knew existed. Landed my dream job within 2 weeks."
+                    "GROW.AI helped me identify gaps in my resume I never knew existed. Landed my dream job within 2
+                    weeks."
                 </blockquote>
                 <div class="flex items-center justify-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 flex items-center justify-center text-white font-semibold text-sm">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 flex items-center justify-center text-white font-semibold text-sm">
                         SK
                     </div>
                     <div class="text-left">
@@ -431,16 +640,18 @@
     <footer class="relative z-10 border-t border-white/5 py-12 px-6">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center">
+                <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center">
                     <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
                 </div>
-                <span class="font-display font-semibold text-lg text-warm-100">GROW<span class="text-coral-400">.AI</span></span>
+                <span class="font-display font-semibold text-lg text-warm-100">GROW<span
+                        class="text-coral-400">.AI</span></span>
             </div>
-            
+
             <div class="text-sm text-warm-600 font-normal">
                 © 2025 GROW.AI. All rights reserved.
             </div>
-            
+
             <div class="flex items-center gap-6">
                 <a href="#" class="text-warm-600 hover:text-coral-400 transition-colors duration-300">
                     <i data-lucide="twitter" class="w-5 h-5"></i>
@@ -488,7 +699,7 @@
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
-        
+
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('resume-input');
         const fileSelected = document.getElementById('file-selected');
@@ -498,20 +709,20 @@
         const btnAnalyze = document.getElementById('btn-analyze');
         const uploadForm = document.getElementById('upload-form');
         const loadingOverlay = document.getElementById('loading-overlay');
-        
+
         // Click to upload
         dropZone.addEventListener('click', () => fileInput.click());
-        
+
         // Drag and drop
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('drag-over');
         });
-        
+
         dropZone.addEventListener('dragleave', () => {
             dropZone.classList.remove('drag-over');
         });
-        
+
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('drag-over');
@@ -523,14 +734,14 @@
                 showToast('Please upload a PDF file only.', 'error');
             }
         });
-        
+
         // File selected
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
                 showFile(fileInput.files[0]);
             }
         });
-        
+
         function showFile(file) {
             if (file.type !== 'application/pdf') {
                 showToast('Please upload a PDF file only.', 'error');
@@ -547,7 +758,7 @@
             btnAnalyze.disabled = false;
             lucide.createIcons();
         }
-        
+
         // Remove file
         fileRemove.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -556,7 +767,7 @@
             fileSelected.classList.add('hidden');
             btnAnalyze.disabled = true;
         });
-        
+
         // Format bytes
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -565,7 +776,7 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
-        
+
         // Form submit — show loading
         uploadForm.addEventListener('submit', () => {
             loadingOverlay.classList.add('active');
@@ -581,28 +792,27 @@
                 }, step.delay);
             });
         });
-        
+
         // Toast notification
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = `fixed bottom-6 right-6 px-6 py-3 rounded-xl glass text-sm font-medium z-[200] animate-slide-up ${
-                type === 'success' ? 'text-sage-300' : 'text-coral-300'
-            }`;
+            toast.className = `fixed bottom-6 right-6 px-6 py-3 rounded-xl glass text-sm font-medium z-[200] animate-slide-up ${type === 'success' ? 'text-sage-300' : 'text-coral-300'
+                }`;
             toast.style.border = type === 'success' ? '1px solid rgba(163,181,163,0.2)' : '1px solid rgba(251,113,133,0.2)';
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
-        
+
         // Scroll reveal animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-        
+
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        
+
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -611,7 +821,7 @@
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
-        
+
         // Parallax effect for orbs
         document.addEventListener('mousemove', (e) => {
             const orbs = document.querySelectorAll('.orb');
@@ -624,4 +834,5 @@
         });
     </script>
 </body>
+
 </html>
