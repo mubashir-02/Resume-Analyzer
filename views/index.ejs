@@ -333,6 +333,7 @@
         }
 
         @keyframes analyzePulse {
+
             0%,
             100% {
                 opacity: 1;
@@ -674,6 +675,113 @@
             box-shadow: 0 0 8px rgba(251, 113, 133, 0.5);
             animation: pulse-icon 1.5s ease-in-out infinite;
         }
+
+        /* Features Dropdown */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-dropdown-trigger .chevron-icon {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-dropdown:hover .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            min-width: 260px;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            z-index: 100;
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .nav-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-dropdown-item .dd-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-dropdown-item .dd-icon i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-dropdown-item .dd-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2px;
+        }
+
+        .nav-dropdown-item .dd-desc {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        /* Sign In button glow */
+        .signin-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .signin-btn:hover {
+            background: rgba(251, 113, 133, 0.15) !important;
+            border-color: rgba(251, 113, 133, 0.4) !important;
+            color: #fb7185 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(251, 113, 133, 0.2);
+        }
     </style>
 </head>
 
@@ -699,12 +807,47 @@
             </div>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-warm-400">
-                <a href="#features" class="hover:text-warm-100 transition-colors duration-300">Features</a>
+                <!-- Features Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#features" class="nav-dropdown-trigger hover:text-warm-100 transition-colors duration-300">
+                        Features
+                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="#features" class="nav-dropdown-item">
+                            <div class="dd-icon" style="background: rgba(251, 113, 133, 0.1);">
+                                <i data-lucide="brain-circuit" class="text-coral-400"></i>
+                            </div>
+                            <div>
+                                <div class="dd-label">AI Skill Extraction</div>
+                                <div class="dd-desc">AI-powered skill identification</div>
+                            </div>
+                        </a>
+                        <a href="#features" class="nav-dropdown-item">
+                            <div class="dd-icon" style="background: rgba(163, 181, 163, 0.1);">
+                                <i data-lucide="target" class="text-sage-400"></i>
+                            </div>
+                            <div>
+                                <div class="dd-label">Smart Job Matching</div>
+                                <div class="dd-desc">Semantic job match analysis</div>
+                            </div>
+                        </a>
+                        <a href="#features" class="nav-dropdown-item">
+                            <div class="dd-icon" style="background: rgba(212, 184, 150, 0.1);">
+                                <i data-lucide="bar-chart-2" class="text-sand-400"></i>
+                            </div>
+                            <div>
+                                <div class="dd-label">Gap Analysis</div>
+                                <div class="dd-desc">Personalized skill recommendations</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
                 <a href="#how-it-works" class="hover:text-warm-100 transition-colors duration-300">How it Works</a>
                 <a href="#stats" class="hover:text-warm-100 transition-colors duration-300">Stats</a>
             </div>
 
-            <a href="" class=" btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-block">
+            <a href="/login" class="signin-btn btn-secondary px-5 py-2.5 rounded-full text-sm font-medium text-warm-200 inline-block">
                 Sign In
             </a>
         </div>
