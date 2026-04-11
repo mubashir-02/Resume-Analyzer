@@ -10,33 +10,94 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/login-page.css">
+  <style>
+    .dynamic-text-wrapper {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      max-width: none;
+      display: block;
+      height: 30px;
+      line-height: 30px;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .nav-ticker {
+      display: inline-block;
+      white-space: nowrap;
+      animation: navTickerMarquee 25s linear infinite;
+    }
+
+    .nav-ticker:hover {
+      animation-play-state: paused;
+    }
+
+    .nav-ticker-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #e0e7ff, #a5b4fc, #c4b5fd, #e0e7ff);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: navTextShimmer 4s linear infinite;
+      display: inline-block;
+      padding-right: 1.5rem;
+      letter-spacing: 0.12em;
+    }
+
+    .nav-separator {
+      display: inline-block;
+      color: rgba(165, 180, 252, 0.3);
+      font-weight: 300;
+      font-size: 0.85rem;
+      padding: 0 0.8rem;
+      -webkit-text-fill-color: rgba(165, 180, 252, 0.3);
+    }
+
+    @keyframes navTextShimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes navTickerMarquee {
+      0% {
+        transform: translateX(0%);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dynamic-text-wrapper {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body class="login-page">
 
   <div class="navbar-wrapper">
     <div class="navbar-glass">
-      <nav class="navbar" aria-label="Primary">
-        <a href="/login" class="logo-brand" aria-label="Grow AI home">
-          <span class="logo-icon-box">
-            <svg class="logo-house-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-          </span>
-          <span class="logo-text">GROW<span class="logo-dot">.AI</span></span>
-        </a>
-        <div class="nav-center">
-          <button type="button" class="nav-item">Features</button>
-          <button type="button" class="nav-item">How it Works</button>
-          <button type="button" class="nav-item">Pricing</button>
+      <nav class="navbar" aria-label="Primary" style="min-height: 50px;">
+        <div id="dynamic-nav-text-container" class="dynamic-text-wrapper" title="Pause animation on hover">
+            <div class="nav-ticker">
+                <span class="nav-ticker-text">Turn your resume into an opportunity magnet.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Analyze. Improve. Get Hired.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Your dream job starts with a better resume.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Smart insights. Stronger resumes. Better careers.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Upgrade your resume. Unlock your future.</span><span class="nav-separator">/</span>
+                <span class="nav-ticker-text">Turn your resume into an opportunity magnet.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Analyze. Improve. Get Hired.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Your dream job starts with a better resume.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Smart insights. Stronger resumes. Better careers.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Upgrade your resume. Unlock your future.</span><span class="nav-separator">/</span>
+            </div>
         </div>
-        <a href="/" class="nav-signin-btn">Sign In</a>
       </nav>
     </div>
   </div>
@@ -132,6 +193,7 @@
       if (video.readyState >= 2) {
         animate();
       }
+
     })();
   </script>
 </body>
