@@ -795,8 +795,8 @@
     <div class="orb orb-3"></div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
-        <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between">
+    <nav class="fixed top-0 left-0 right-0 z-50 px-4 py-3 md:px-6 md:py-4">
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-4 py-2.5 md:px-6 md:py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div
                     class="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-500 to-coral-600 flex items-center justify-center shadow-lg shadow-coral-500/20">
@@ -854,13 +854,13 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="relative z-10 pt-32 pb-20 px-6">
+    <main class="relative z-10 pt-24 pb-12 px-4 md:pt-32 md:pb-20 md:px-6">
         <div class="max-w-6xl mx-auto">
 
             <!-- Hero Section -->
-            <div class="text-center mb-20 relative">
+            <div class="text-center mb-12 md:mb-20 relative">
                 <!-- Badge -->
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-fade-in">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 md:mb-8 animate-fade-in">
                     <span class="w-2 h-2 rounded-full bg-coral-400 animate-pulse"></span>
                     <span class="text-xs font-semibold tracking-widest text-coral-300 uppercase font-sans">AI-Powered
                         Career Intelligence</span>
@@ -868,13 +868,13 @@
 
                 <!-- Main Headline -->
                 <h1
-                    class="font-display font-semibold text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8 tracking-tight animate-slide-up">
+                    class="font-display font-semibold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-6 md:mb-8 tracking-tight animate-slide-up">
                     <span class="block text-warm-100 mb-2">Analyze Your Resume</span>
                     <span class="block text-gradient">Find Your Perfect Job</span>
                 </h1>
 
                 <!-- Subheadline -->
-                <p class="text-lg md:text-xl text-warm-400 max-w-2xl mx-auto leading-relaxed mb-12 font-normal animate-slide-up"
+                <p class="text-base md:text-xl text-warm-400 max-w-2xl mx-auto leading-relaxed mb-8 md:mb-12 font-normal animate-slide-up"
                     style="animation-delay: 0.1s">
                     Upload your resume and let our AI extract your skills, match you with top jobs,
                     and show you exactly where you stand — <span class="text-warm-200 font-medium">all in
@@ -882,7 +882,7 @@
                 </p>
 
                 <!-- Trust Badges -->
-                <div class="flex items-center justify-center gap-8 text-sm text-warm-500 mb-16 animate-slide-up flex-wrap"
+                <div class="flex items-center justify-center gap-4 md:gap-8 text-sm text-warm-500 mb-10 md:mb-16 animate-slide-up flex-wrap"
                     style="animation-delay: 0.2s">
                     <div class="flex items-center gap-2">
                         <i data-lucide="shield-check" class="w-4 h-4 text-sage-400"></i>
@@ -900,8 +900,8 @@
             </div>
 
             <!-- Upload Section -->
-            <div class="max-w-3xl mx-auto mb-24 animate-slide-up" style="animation-delay: 0.3s">
-                <div class="glass rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl shadow-black/50">
+            <div class="max-w-3xl mx-auto mb-16 md:mb-24 animate-slide-up" style="animation-delay: 0.3s">
+                <div class="glass rounded-3xl p-5 sm:p-8 md:p-12 relative overflow-hidden shadow-2xl shadow-black/50">
                     <!-- Subtle gradient overlay -->
                     <div
                         class="absolute inset-0 bg-gradient-to-br from-coral-500/5 via-transparent to-sage-500/5 pointer-events-none">
@@ -911,18 +911,18 @@
                         <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
                             <!-- Upload Zone -->
                             <div id="drop-zone"
-                                class="upload-zone rounded-2xl p-12 text-center cursor-pointer group mb-6">
+                                class="upload-zone rounded-2xl p-6 sm:p-8 md:p-12 text-center cursor-pointer group mb-6">
                                 <input type="file" name="resume" id="resume-input" accept=".pdf,application/pdf"
                                     required class="hidden">
 
                                 <div
-                                    class="w-20 h-20 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                    class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                                     <i data-lucide="upload-cloud"
-                                        class="w-10 h-10 text-coral-400 group-hover:text-coral-300 transition-colors"></i>
+                                        class="w-8 h-8 md:w-10 md:h-10 text-coral-400 group-hover:text-coral-300 transition-colors"></i>
                                 </div>
 
                                 <h3
-                                    class="text-xl font-display font-medium text-warm-100 mb-2 group-hover:text-coral-300 transition-colors">
+                                    class="text-lg md:text-xl font-display font-medium text-warm-100 mb-2 group-hover:text-coral-300 transition-colors">
                                     Drag & drop your resume here
                                 </h3>
                                 <p class="text-warm-500 text-sm font-normal">
@@ -961,7 +961,7 @@
             </div>
 
             <!-- Features Grid -->
-            <div id="features" class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-24">
+            <div id="features" class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16 md:mb-24">
                 <div class="glass-card rounded-2xl p-8 text-center group reveal">
                     <div
                         class="w-16 h-16 mx-auto mb-6 rounded-2xl icon-wrap flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
@@ -998,8 +998,8 @@
             </div>
 
             <!-- Stats Section -->
-            <div id="stats" class="glass rounded-3xl p-8 md:p-12 max-w-4xl mx-auto mb-24 reveal">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div id="stats" class="glass rounded-3xl p-8 md:p-12 max-w-4xl mx-auto mb-16 md:mb-24 reveal">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
                     <div class="group">
                         <div
                             class="text-4xl md:text-5xl font-display font-semibold text-gradient mb-2 group-hover:scale-110 transition-transform">

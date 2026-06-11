@@ -31,6 +31,12 @@ if (!fs.existsSync(uploadsDir)) {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Favicon (browsers auto-request /favicon.ico)
+app.get('/favicon.ico', (req, res) => {
+  res.type('image/svg+xml');
+  res.sendFile(path.join(__dirname, 'public', 'favicon.svg'));
+});
+
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 

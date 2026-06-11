@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/favicon.ico">
   <title>
     <%= title %>
   </title>
@@ -16,12 +18,9 @@
   <link rel="stylesheet" href="/css/login-page.css">
   <style>
     .dynamic-text-wrapper {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 100%;
-      max-width: none;
+      flex: 1;
+      min-width: 0;
+      margin: 0 1rem;
       display: block;
       height: 30px;
       line-height: 30px;
@@ -91,7 +90,16 @@
 
   <div class="navbar-wrapper">
     <div class="navbar-glass">
-      <nav class="navbar" aria-label="Primary" style="min-height: 50px;">
+      <nav class="navbar" aria-label="Primary">
+        <a href="/" class="logo-brand">
+          <div class="logo-icon-box">
+            <svg class="logo-house-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span class="logo-text">GROW<span class="logo-dot">.AI</span></span>
+        </a>
+
         <div id="dynamic-nav-text-container" class="dynamic-text-wrapper" title="Pause animation on hover">
             <div class="nav-ticker">
                 <span class="nav-ticker-text">Turn your resume into an opportunity magnet.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Analyze. Improve. Get Hired.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Your dream job starts with a better resume.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Smart insights. Stronger resumes. Better careers.</span><span class="nav-separator">/</span><span class="nav-ticker-text">Upgrade your resume. Unlock your future.</span><span class="nav-separator">/</span>

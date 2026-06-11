@@ -174,26 +174,77 @@ function safeParseJSON(text) {
  */
 function heuristicSkillsProfile(resumeText) {
   const lower = resumeText.toLowerCase();
+
+  // Large curated catalog of recognized tech skills, tools, and domain terms
   const catalog = [
+    // Programming languages
     ['javascript', 'JavaScript'], ['typescript', 'TypeScript'], ['python', 'Python'],
-    ['java', 'Java'], ['c++', 'C++'], ['c#', 'C#'], ['ruby', 'Ruby'], ['golang', 'Go'],
+    ['java ', 'Java'], ['c++', 'C++'], ['c#', 'C#'], ['ruby', 'Ruby'], ['golang', 'Go'],
     ['rust', 'Rust'], ['php', 'PHP'], ['swift', 'Swift'], ['kotlin', 'Kotlin'],
-    ['react', 'React'], ['angular', 'Angular'], ['vue', 'Vue.js'], ['node.js', 'Node.js'],
-    ['express', 'Express.js'], ['django', 'Django'], ['flask', 'Flask'],
-    ['spring', 'Spring'], ['mongodb', 'MongoDB'], ['postgres', 'PostgreSQL'],
-    ['postgresql', 'PostgreSQL'], ['mysql', 'MySQL'], ['redis', 'Redis'],
+    ['scala', 'Scala'], ['perl', 'Perl'], ['r programming', 'R'], ['matlab', 'MATLAB'],
+    ['dart', 'Dart'], ['lua', 'Lua'], ['shell scripting', 'Shell Scripting'],
+    ['objective-c', 'Objective-C'], ['haskell', 'Haskell'], ['elixir', 'Elixir'],
+    // Frontend
+    ['react', 'React'], ['angular', 'Angular'], ['vue', 'Vue.js'], ['next.js', 'Next.js'],
+    ['nuxt', 'Nuxt.js'], ['svelte', 'Svelte'], ['jquery', 'jQuery'], ['bootstrap', 'Bootstrap'],
+    ['tailwind', 'Tailwind CSS'], ['sass', 'SASS/SCSS'], ['webpack', 'Webpack'],
+    ['vite', 'Vite'], ['redux', 'Redux'], ['zustand', 'Zustand'],
+    // Backend
+    ['node.js', 'Node.js'], ['express', 'Express.js'], ['django', 'Django'], ['flask', 'Flask'],
+    ['spring boot', 'Spring Boot'], ['spring', 'Spring'], ['fastapi', 'FastAPI'],
+    ['rails', 'Ruby on Rails'], ['laravel', 'Laravel'], ['asp.net', 'ASP.NET'],
+    ['nest.js', 'NestJS'], ['nestjs', 'NestJS'], ['koa', 'Koa'],
+    // Databases
+    ['mongodb', 'MongoDB'], ['postgres', 'PostgreSQL'], ['postgresql', 'PostgreSQL'],
+    ['mysql', 'MySQL'], ['redis', 'Redis'], ['sqlite', 'SQLite'], ['oracle', 'Oracle'],
+    ['dynamodb', 'DynamoDB'], ['cassandra', 'Cassandra'], ['elasticsearch', 'Elasticsearch'],
+    ['firebase', 'Firebase'], ['supabase', 'Supabase'], ['prisma', 'Prisma'],
+    ['mongoose', 'Mongoose'], ['sequelize', 'Sequelize'],
+    // Cloud & DevOps
     ['aws', 'AWS'], ['azure', 'Azure'], ['gcp', 'GCP'], ['docker', 'Docker'],
-    ['kubernetes', 'Kubernetes'], ['git', 'Git'],
-    ['html', 'HTML'], ['css', 'CSS'], ['tailwind', 'Tailwind'], ['graphql', 'GraphQL'],
-    ['machine learning', 'Machine Learning'], ['openai', 'OpenAI'], ['nlp', 'NLP'],
+    ['kubernetes', 'Kubernetes'], ['terraform', 'Terraform'], ['jenkins', 'Jenkins'],
+    ['ci/cd', 'CI/CD'], ['github actions', 'GitHub Actions'], ['gitlab', 'GitLab CI'],
+    ['ansible', 'Ansible'], ['nginx', 'Nginx'], ['apache', 'Apache'],
+    ['heroku', 'Heroku'], ['vercel', 'Vercel'], ['netlify', 'Netlify'],
+    ['cloudflare', 'Cloudflare'],
+    // Data & AI/ML
+    ['machine learning', 'Machine Learning'], ['deep learning', 'Deep Learning'],
+    ['artificial intelligence', 'AI'], ['openai', 'OpenAI'], ['nlp', 'NLP'],
     ['tensorflow', 'TensorFlow'], ['pytorch', 'PyTorch'], ['pandas', 'Pandas'],
-    ['numpy', 'NumPy'], ['n8n', 'n8n'], ['zapier', 'Zapier'], ['automation', 'Automation'],
-    ['scraping', 'Web Scraping'], ['oracle', 'Oracle'],
-    ['firebase', 'Firebase'], ['terraform', 'Terraform'], ['jenkins', 'Jenkins'],
-    ['linux', 'Linux'], ['bash', 'Bash'], ['rest api', 'REST APIs'],
+    ['numpy', 'NumPy'], ['scikit-learn', 'Scikit-learn'], ['keras', 'Keras'],
+    ['computer vision', 'Computer Vision'], ['data science', 'Data Science'],
+    ['data analysis', 'Data Analysis'], ['tableau', 'Tableau'], ['power bi', 'Power BI'],
+    ['jupyter', 'Jupyter'], ['hadoop', 'Hadoop'], ['spark', 'Apache Spark'],
+    // Tools & Platforms
+    ['git', 'Git'], ['github', 'GitHub'], ['jira', 'Jira'], ['confluence', 'Confluence'],
+    ['figma', 'Figma'], ['postman', 'Postman'], ['swagger', 'Swagger'],
+    ['n8n', 'n8n'], ['zapier', 'Zapier'], ['slack', 'Slack'],
+    ['vs code', 'VS Code'], ['intellij', 'IntelliJ'],
+    // Markup & Protocols
+    ['html', 'HTML'], ['css', 'CSS'], ['graphql', 'GraphQL'], ['rest api', 'REST APIs'],
+    ['websocket', 'WebSockets'], ['grpc', 'gRPC'], ['xml', 'XML'], ['json', 'JSON'],
+    // Mobile
+    ['react native', 'React Native'], ['flutter', 'Flutter'],
+    ['android', 'Android Development'], ['ios development', 'iOS Development'],
+    // Concepts & Methodologies
     ['microservices', 'Microservices'], ['agile', 'Agile'], ['scrum', 'Scrum'],
-    ['excel', 'Excel']
+    ['kanban', 'Kanban'], ['devops', 'DevOps'], ['test driven', 'TDD'],
+    ['unit testing', 'Unit Testing'], ['automation', 'Automation'],
+    ['web scraping', 'Web Scraping'], ['scraping', 'Web Scraping'],
+    ['data structures', 'Data Structures'], ['algorithms', 'Algorithms'],
+    ['object oriented', 'Object-Oriented Programming'],
+    ['design patterns', 'Design Patterns'], ['system design', 'System Design'],
+    ['responsive design', 'Responsive Design'],
+    // Other common tools & skills
+    ['linux', 'Linux'], ['bash', 'Bash'], ['excel', 'Excel'],
+    ['sql', 'SQL'], ['nosql', 'NoSQL'], ['socket.io', 'Socket.IO'],
+    ['ejs', 'EJS'], ['handlebars', 'Handlebars'], ['pug', 'Pug'],
+    ['jwt', 'JWT'], ['oauth', 'OAuth'], ['authentication', 'Authentication'],
+    ['authorization', 'Authorization'], ['security', 'Security'],
+    ['api development', 'API Development'], ['crud', 'CRUD Operations'],
+    ['version control', 'Version Control'],
   ];
+
   const seen = new Set();
   const skills = [];
   for (const [needle, label] of catalog) {
@@ -202,19 +253,15 @@ function heuristicSkillsProfile(resumeText) {
       skills.push(label);
     }
   }
-  const chunks = resumeText.split(/[,•\n;|]+/).map(s => s.trim()).filter(s => s.length > 2 && s.length < 45);
-  for (const c of chunks) {
-    const k = c.toLowerCase();
-    if (!seen.has(k) && /^[A-Za-z0-9+#.\s/&()\-]+$/.test(c)) {
-      seen.add(k);
-      skills.push(c);
-    }
-  }
+
+  // Only use catalog-matched skills — no raw chunk extraction (avoids phone numbers, garbage text)
   const expanded = skills.slice(0, 35);
+  const roles = deriveRolesFromSkills(expanded);
+
   return {
     skills: expanded.slice(0, 18),
     expanded_skills: expanded,
-    roles: ['Software Developer', 'Engineer'],
+    roles,
     experience: 'fresher',
     keywords: expanded.slice(0, 22)
   };
@@ -414,6 +461,43 @@ Keep the response compact.`;
 }
 
 /**
+ * Derive plausible job roles from a list of skills when Gemini doesn't return any.
+ */
+function deriveRolesFromSkills(skills) {
+  const lower = skills.map(s => s.toLowerCase());
+  const roles = [];
+  const roleMap = [
+    [['react', 'vue', 'angular', 'html', 'css', 'tailwind', 'frontend'], 'Frontend Developer'],
+    [['node.js', 'express', 'django', 'flask', 'spring', 'backend', 'rest api'], 'Backend Developer'],
+    [['react', 'node.js', 'mongodb', 'full stack', 'fullstack'], 'Full Stack Developer'],
+    [['python', 'machine learning', 'tensorflow', 'pytorch', 'nlp', 'data science'], 'Data Scientist'],
+    [['python', 'pandas', 'numpy', 'sql', 'data analysis', 'excel', 'tableau'], 'Data Analyst'],
+    [['aws', 'azure', 'gcp', 'docker', 'kubernetes', 'terraform', 'devops', 'ci/cd'], 'DevOps Engineer'],
+    [['java', 'spring', 'microservices'], 'Java Developer'],
+    [['python', 'django', 'flask'], 'Python Developer'],
+    [['swift', 'ios', 'xcode'], 'iOS Developer'],
+    [['kotlin', 'android'], 'Android Developer'],
+    [['flutter', 'react native', 'mobile'], 'Mobile Developer'],
+    [['sql', 'mongodb', 'postgresql', 'mysql', 'database', 'redis'], 'Database Engineer'],
+    [['figma', 'ui', 'ux', 'design'], 'UI/UX Designer'],
+    [['c++', 'c#', 'rust', 'systems'], 'Software Engineer'],
+  ];
+
+  for (const [triggers, role] of roleMap) {
+    if (triggers.some(t => lower.some(s => s.includes(t)))) {
+      roles.push(role);
+    }
+  }
+
+  if (roles.length === 0) {
+    roles.push('Software Developer', 'Engineer');
+  }
+
+  // Deduplicate
+  return [...new Set(roles)].slice(0, 5);
+}
+
+/**
  * Extract skills only (fallback when no jobs found)
  */
 async function extractSkills(resumeText) {
@@ -433,7 +517,7 @@ async function extractSkills(resumeText) {
     }
   });
 
-  const prompt = `Extract skills, experience level, job roles, and keywords from this resume.
+  const prompt = `Analyze this resume and extract ALL of the following fields. Every field is REQUIRED and must be non-empty.
 
 Resume:
 """
@@ -442,6 +526,15 @@ ${resumeText.substring(0, 2500)}
 
 Return ONLY this JSON structure:
 {"skills":["skill1","skill2"],"expanded_skills":["skill1","related1","skill2","related2"],"roles":["role1","role2"],"experience":"fresher","keywords":["keyword1","keyword2"]}
+
+Field descriptions:
+- skills: technical and soft skills explicitly mentioned (minimum 3).
+- expanded_skills: all skills above PLUS closely related skills the candidate likely knows.
+- roles: 2-5 job titles/roles the candidate is suited for based on their skills and experience (e.g. "Frontend Developer", "Full Stack Engineer", "Data Analyst"). NEVER leave this empty.
+- experience: one of "fresher", "intermediate", or "experienced".
+- keywords: 5-15 ATS-friendly search terms combining skills, tools, technologies, and domain terms from the resume. NEVER leave this empty.
+
+IMPORTANT: "roles" and "keywords" MUST each contain at least 2 items. Infer roles from the skills if no explicit role is stated.
 
 Do NOT include any text outside the JSON.`;
 
@@ -455,12 +548,28 @@ Do NOT include any text outside the JSON.`;
     return data;
   }
 
+  let roles = Array.isArray(parsed.roles) ? parsed.roles.filter(Boolean) : [];
+  let keywords = Array.isArray(parsed.keywords) ? parsed.keywords.filter(Boolean) : [];
+  const skills = Array.isArray(parsed.skills) ? parsed.skills.filter(Boolean) : [];
+
+  // Fallback: derive roles from skills if Gemini returned none
+  if (roles.length === 0 && skills.length > 0) {
+    roles = deriveRolesFromSkills(skills);
+    console.log(`⚠️ Roles were empty — derived ${roles.length} roles from skills`);
+  }
+
+  // Fallback: derive keywords from skills if Gemini returned none
+  if (keywords.length === 0 && skills.length > 0) {
+    keywords = skills.slice(0, 15);
+    console.log(`⚠️ Keywords were empty — using ${keywords.length} skills as keywords`);
+  }
+
   const data = {
-    skills: parsed.skills || [],
-    expanded_skills: parsed.expanded_skills || parsed.skills || [],
-    roles: parsed.roles || [],
+    skills,
+    expanded_skills: parsed.expanded_skills || skills,
+    roles,
     experience: parsed.experience || 'fresher',
-    keywords: parsed.keywords || []
+    keywords
   };
 
   cache.set(key, { data, timestamp: Date.now() });
@@ -491,10 +600,21 @@ async function extractSkillsFromPdfBuffer(pdfBuffer) {
 
   const prompt = `You are given a resume as a PDF. Read the document (including text in images if present).
 
-Extract skills, experience level, job roles, and keywords. Also include resume_text: the full plain-text content of the resume for matching (truncate to about 4000 characters if extremely long).
+Extract ALL of the following fields. Every field is REQUIRED and must be non-empty.
+Also include resume_text: the full plain-text content of the resume for matching (truncate to about 4000 characters if extremely long).
 
 Return ONLY this JSON structure:
 {"skills":["skill1","skill2"],"expanded_skills":["skill1","related1"],"roles":["role1","role2"],"experience":"fresher","keywords":["keyword1","keyword2"],"resume_text":"plain text of the resume"}
+
+Field descriptions:
+- skills: technical and soft skills explicitly mentioned (minimum 3).
+- expanded_skills: all skills above PLUS closely related skills the candidate likely knows.
+- roles: 2-5 job titles/roles the candidate is suited for based on their skills and experience (e.g. "Frontend Developer", "Full Stack Engineer"). NEVER leave this empty.
+- experience: one of "fresher", "intermediate", or "experienced".
+- keywords: 5-15 ATS-friendly search terms. NEVER leave this empty.
+- resume_text: the full plain-text content of the resume.
+
+IMPORTANT: "roles" and "keywords" MUST each contain at least 2 items.
 
 Do NOT include any text outside the JSON.`;
 
@@ -519,12 +639,28 @@ Do NOT include any text outside the JSON.`;
     );
   }
 
+  const pdfSkills = Array.isArray(parsed.skills) ? parsed.skills.filter(Boolean) : [];
+  let pdfRoles = Array.isArray(parsed.roles) ? parsed.roles.filter(Boolean) : [];
+  let pdfKeywords = Array.isArray(parsed.keywords) ? parsed.keywords.filter(Boolean) : [];
+
+  // Fallback: derive roles from skills if Gemini returned none
+  if (pdfRoles.length === 0 && pdfSkills.length > 0) {
+    pdfRoles = deriveRolesFromSkills(pdfSkills);
+    console.log(`⚠️ PDF roles were empty — derived ${pdfRoles.length} roles from skills`);
+  }
+
+  // Fallback: derive keywords from skills if Gemini returned none
+  if (pdfKeywords.length === 0 && pdfSkills.length > 0) {
+    pdfKeywords = pdfSkills.slice(0, 15);
+    console.log(`⚠️ PDF keywords were empty — using ${pdfKeywords.length} skills as keywords`);
+  }
+
   const data = {
-    skills: parsed.skills || [],
-    expanded_skills: parsed.expanded_skills || parsed.skills || [],
-    roles: parsed.roles || [],
+    skills: pdfSkills,
+    expanded_skills: parsed.expanded_skills || pdfSkills,
+    roles: pdfRoles,
     experience: parsed.experience || 'fresher',
-    keywords: parsed.keywords || [],
+    keywords: pdfKeywords,
     resume_text: typeof parsed.resume_text === 'string' ? parsed.resume_text : ''
   };
 
