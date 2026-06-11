@@ -1,23 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const pdfParse = require('pdf-parse');
 
 const { extractSkills, extractSkillsFromPdfBuffer, analyzeResumeAndMatchJobs } = require('../services/gemini');
 const { fetchJobs, filterJobs } = require('../services/adzuna');
+const { uploadResumePdf, isCloudinaryConfigured } = require('../services/cloudinary');
 
-// Multer configuration — PDF only
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '..', 'uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `resume_${Date.now()}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
-  }
-});
+// Multer — keep PDF in memory (parsed locally, then stored in Cloudinary)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'application/pdf') {
@@ -45,8 +36,6 @@ router.get('/dashboard', (req, res) => {
 
 // POST /upload — Full pipeline
 router.post('/upload', upload.single('resume'), async (req, res) => {
-  let uploadedFilePath = null;
-
   try {
     if (!req.file) {
       return res.status(400).render('error', {
@@ -56,11 +45,27 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
       });
     }
 
-    uploadedFilePath = req.file.path;
     console.log(`📄 Resume uploaded: ${req.file.originalname}`);
 
+    const pdfBuffer = req.file.buffer;
+
+    if (isCloudinaryConfigured()) {
+      try {
+        const cloud = await uploadResumePdf(pdfBuffer, req.file.originalname);
+        console.log(`☁️ Resume saved to Cloudinary (${cloud.bytes} bytes): ${cloud.publicId}`);
+      } catch (cloudErr) {
+        console.error('Cloudinary upload failed:', cloudErr.message);
+        return res.status(500).render('error', {
+          title: 'Upload Error',
+          message: 'Could not save your resume to cloud storage. Please try again.',
+          details: process.env.NODE_ENV === 'development' ? cloudErr.message : null
+        });
+      }
+    } else {
+      console.warn('⚠️ Cloudinary not configured — resume analyzed in memory only (not stored).');
+    }
+
     // 1. Parse PDF
-    const pdfBuffer = fs.readFileSync(uploadedFilePath);
     const pdfData = await pdfParse(pdfBuffer);
     const rawResumeText = typeof pdfData.text === 'string' ? pdfData.text : '';
     let resumeTextMultiline = rawResumeText.trim();
@@ -174,7 +179,7 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
 
     if (filteredJobs.length > 0) {
       console.log(`🧠 Step 3: AI scoring ${Math.min(filteredJobs.length, 12)} job matches...`);
-      const result = await analyzeResumeAndMatchJobs(resumeText, filteredJobs);
+      const result = await analyzeResumeAndMatchJobs(resumeText, filteredJobs, profile);
       // Merge the AI-scored profile with the original skills profile
       // (the scoring call may return additional insights)
       if (result.profile) {
@@ -188,9 +193,6 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
       console.log('ℹ️ No jobs available to score — showing skills profile only');
     }
 
-    // 5. Cleanup & render
-    cleanupFile(uploadedFilePath);
-
     const improveResumeText = ((resumeTextMultiline || '').trim() || (resumeText || '').trim() || '');
     const improvePageJson = JSON.stringify({
       resumeText: improveResumeText,
@@ -200,35 +202,6 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
         apply_url: j.apply_url || ''
       }))
     }).replace(/</g, '\\u003c');
-
-    // #region agent log
-    (function () {
-      const logLine = JSON.stringify({
-        sessionId: 'b73140',
-        runId: 'post-fix-v2',
-        hypothesisId: 'H1',
-        location: 'routes/upload.js:pre-render',
-        message: 'results render locals',
-        data: {
-          resumeMlLen: (resumeTextMultiline || '').length,
-          resumeMlTrimLen: (resumeTextMultiline || '').trim().length,
-          resumeCollapsedLen: (resumeText || '').length,
-          improveResumeLen: improveResumeText.length,
-          improvePageJsonLen: improvePageJson.length,
-          jobsCount: matchedJobs.length
-        },
-        timestamp: Date.now()
-      });
-      try {
-        fs.appendFileSync(path.join(__dirname, '..', 'debug-b73140.log'), logLine + '\n');
-      } catch (_) {}
-      fetch('http://127.0.0.1:7596/ingest/fcb39686-00b0-4314-b4ec-c49112998452', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'b73140' },
-        body: logLine
-      }).catch(() => {});
-    })();
-    // #endregion
 
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.render('results', {
@@ -242,7 +215,6 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
 
   } catch (error) {
     console.error('Pipeline error:', error.message);
-    cleanupFile(uploadedFilePath);
 
     let userMessage = 'An unexpected error occurred. Please try again.';
     const msg = error.message || '';
@@ -309,12 +281,6 @@ function mergeUnique(arr1, arr2) {
     }
   }
   return result;
-}
-
-function cleanupFile(filePath) {
-  if (filePath && fs.existsSync(filePath)) {
-    try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
-  }
 }
 
 module.exports = router;

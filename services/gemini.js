@@ -220,37 +220,101 @@ function heuristicSkillsProfile(resumeText) {
   };
 }
 
+const STOP_WORDS = new Set([
+  'the', 'and', 'for', 'with', 'this', 'that', 'from', 'have', 'has', 'was', 'were',
+  'are', 'been', 'being', 'will', 'would', 'could', 'should', 'about', 'into', 'through',
+  'during', 'before', 'after', 'above', 'below', 'between', 'under', 'again', 'further',
+  'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'each', 'few',
+  'more', 'most', 'other', 'some', 'such', 'only', 'own', 'same', 'than', 'too', 'very',
+  'can', 'just', 'now', 'our', 'you', 'your', 'they', 'them', 'their', 'she', 'him',
+  'his', 'her', 'its', 'who', 'which', 'what', 'any', 'may', 'also', 'not', 'but', 'use',
+  'used', 'using', 'work', 'worked', 'working', 'experience', 'years', 'year', 'month',
+  'role', 'team', 'project', 'projects', 'company', 'skills', 'skill', 'ability',
+  'including', 'included', 'well', 'strong', 'good', 'great', 'able', 'help', 'make',
+  'made', 'new', 'via', 'per', 'etc', 'job', 'jobs', 'resume', 'summary', 'objective'
+]);
+
+function isStopTerm(term) {
+  const lower = term.toLowerCase().trim();
+  if (!lower || lower.length < 2) return true;
+  if (STOP_WORDS.has(lower)) return true;
+  if (lower.length <= 3 && !/^[a-z0-9+#.]+$/i.test(lower)) return true;
+  return false;
+}
+
+function skillMatchesJobBlob(skill, blob) {
+  const lower = skill.toLowerCase().trim();
+  if (!lower) return false;
+  if (blob.includes(lower)) return true;
+  const words = lower.split(/[^a-z0-9+#.]+/i).filter(w => w.length > 2 && !STOP_WORDS.has(w));
+  if (words.length > 1) return words.every(w => blob.includes(w));
+  return false;
+}
+
 /**
- * Keyword overlap when Gemini rate-limits — still shows ranked jobs without another API call.
+ * Build a skill list for local matching — prefer AI-extracted profile terms over raw resume tokens.
  */
-function heuristicJobMatches(resumeText, jobs) {
-  const resumeLower = resumeText.toLowerCase();
-  const tokens = resumeLower
-    .split(/[^a-z0-9+#.]+/i)
-    .filter(t => t.length > 2)
-    .slice(0, 120);
+function collectMatchSkills(profile, resumeText) {
+  const seen = new Set();
+  const out = [];
+
+  const add = (label) => {
+    const t = (label || '').trim();
+    if (!t || isStopTerm(t)) return;
+    const key = t.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(t);
+  };
+
+  if (profile) {
+    [...(profile.skills || []), ...(profile.expanded_skills || []), ...(profile.keywords || []), ...(profile.roles || [])]
+      .forEach(add);
+  }
+
+  if (out.length < 4) {
+    const fallback = heuristicSkillsProfile(resumeText);
+    [...(fallback.skills || []), ...(fallback.expanded_skills || []), ...(fallback.keywords || [])].forEach(add);
+  }
+
+  return out.slice(0, 35);
+}
+
+/**
+ * Skill overlap when Gemini rate-limits — uses extracted profile skills, not raw stop-words.
+ */
+function heuristicJobMatches(resumeText, jobs, profile = null) {
+  const skills = collectMatchSkills(profile, resumeText);
 
   return jobs.map(job => {
-    const blob = `${job.title} ${job.company} ${(job.description || '').slice(0, 400)}`.toLowerCase();
-    let hits = 0;
+    const blob = `${job.title} ${job.company} ${(job.description || '').slice(0, 800)}`.toLowerCase();
     const matched = [];
-    for (const t of tokens) {
-      if (blob.includes(t)) {
-        hits++;
-        if (matched.length < 6) matched.push(t);
+    const missing = [];
+
+    for (const skill of skills) {
+      if (skillMatchesJobBlob(skill, blob)) {
+        if (matched.length < 6) matched.push(skill);
+      } else if (missing.length < 5) {
+        missing.push(skill);
       }
     }
-    const denom = Math.max(12, Math.min(tokens.length, 40));
-    const ratio = Math.min(1, hits / denom);
-    const m = Math.min(92, Math.max(28, Math.round(32 + ratio * 58)));
+
+    const pool = Math.min(skills.length, 12);
+    const ratio = pool > 0 ? matched.length / pool : 0;
+    const m = Math.min(90, Math.max(22, Math.round(28 + ratio * 62)));
+
+    const reason = skills.length > 0
+      ? `Matched ${matched.length} of your listed skills to this role (estimated — retry shortly for full AI scoring).`
+      : 'Limited keyword match while AI is busy. Wait a minute and upload again for detailed scoring.';
+
     return {
       title: job.title || 'Untitled',
       company: job.company || 'Unknown',
       description: job.description || '',
       match_percentage: m,
       matched_skills: matched,
-      missing_skills: [],
-      reason: 'Estimated from resume vs job text (Gemini rate limit — refresh later for AI reasons).',
+      missing_skills: missing.slice(0, 5),
+      reason,
       apply_url: job.apply_url || '#',
       salary: job.salary || 'Not specified'
     };
@@ -261,7 +325,7 @@ function heuristicJobMatches(resumeText, jobs) {
  * Score resume against jobs. Returns matches only — profile comes from extractSkills
  * so the model does not re-emit a huge profile (avoids truncated JSON and 0 matches).
  */
-async function analyzeResumeAndMatchJobs(resumeText, jobs) {
+async function analyzeResumeAndMatchJobs(resumeText, jobs, profile = null) {
   const key = getCacheKey(resumeText);
   const cached = cache.get(key);
   if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
@@ -312,10 +376,10 @@ Keep the response compact.`;
   let parsed;
   try {
     // One API attempt per parse try — avoids 65s waits on 429; fallback fills in matches locally
-    parsed = await callGeminiWithJSONRetry(model, prompt, 2, { maxRetries: 1, rateLimitWaitMs: 0 });
+    parsed = await callGeminiWithJSONRetry(model, prompt, 2, { maxRetries: 3, rateLimitWaitMs: 12000 });
   } catch (err) {
-    console.warn('⚠️ Job scoring API unavailable, using keyword estimates:', err.message || err);
-    const data = { profile: null, matchedJobs: heuristicJobMatches(resumeText, slice) };
+    console.warn('⚠️ Job scoring API unavailable, using skill-based estimates:', err.message || err);
+    const data = { profile: null, matchedJobs: heuristicJobMatches(resumeText, slice, profile) };
     cache.set(key, { data, timestamp: Date.now() });
     return data;
   }
@@ -339,7 +403,7 @@ Keep the response compact.`;
 
   if (matchedJobs.length === 0 && n > 0) {
     console.warn('⚠️ AI returned no matches; using keyword estimates.');
-    const data = { profile: null, matchedJobs: heuristicJobMatches(resumeText, slice) };
+    const data = { profile: null, matchedJobs: heuristicJobMatches(resumeText, slice, profile) };
     cache.set(key, { data, timestamp: Date.now() });
     return data;
   }
@@ -383,7 +447,7 @@ Do NOT include any text outside the JSON.`;
 
   let parsed;
   try {
-    parsed = await callGeminiWithJSONRetry(model, prompt, 2, { maxRetries: 1, rateLimitWaitMs: 0 });
+    parsed = await callGeminiWithJSONRetry(model, prompt, 2, { maxRetries: 3, rateLimitWaitMs: 12000 });
   } catch (err) {
     console.warn('⚠️ Skills API unavailable, using local keyword extraction:', err.message || err);
     const data = heuristicSkillsProfile(resumeText);

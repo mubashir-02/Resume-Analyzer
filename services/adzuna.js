@@ -1,4 +1,4 @@
-const axios = require('axios');
+const { httpClient } = require('./httpClient');
 
 const ADZUNA_BASE_URL = 'https://api.adzuna.com/v1/api/jobs';
 
@@ -107,10 +107,10 @@ function buildSmartQueries(normalizedSkills, originalSkills) {
   const queries = [];
   const used = new Set();
 
-  // Priority 1: Use the top skill paired with "developer"/"engineer"
+  // Priority 1: Use the top skill paired with "developer" (skip if already a role title)
   if (normalizedSkills.length > 0) {
     const topSkill = normalizedSkills[0];
-    queries.push(`${topSkill} developer`);
+    queries.push(toJobSearchQuery(topSkill));
     used.add(topSkill);
   }
 
@@ -118,7 +118,7 @@ function buildSmartQueries(normalizedSkills, originalSkills) {
   if (normalizedSkills.length > 1) {
     const secondSkill = normalizedSkills[1];
     if (!used.has(secondSkill)) {
-      queries.push(`${secondSkill} developer`);
+      queries.push(toJobSearchQuery(secondSkill));
       used.add(secondSkill);
     }
   }
@@ -159,11 +159,19 @@ function buildSmartQueries(normalizedSkills, originalSkills) {
   return queries.slice(0, 4); // Max 4 queries
 }
 
+function toJobSearchQuery(term) {
+  const lower = (term || '').toLowerCase();
+  if (/\b(developer|engineer|designer|analyst|architect|manager|scientist)\b/.test(lower)) {
+    return term.trim();
+  }
+  return `${term.trim()} developer`;
+}
+
 /**
  * Execute a single Adzuna API query
  */
 async function executeAdzunaQuery(appId, appKey, query, country, resultsPerPage) {
-  const response = await axios.get(`${ADZUNA_BASE_URL}/${country}/search/1`, {
+  const response = await httpClient.get(`${ADZUNA_BASE_URL}/${country}/search/1`, {
     params: {
       app_id: appId,
       app_key: appKey,

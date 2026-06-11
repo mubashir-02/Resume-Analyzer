@@ -1,13 +1,28 @@
 require('dotenv').config();
+
+// Local dev only (Windows/antivirus TLS issues). Never enable in production.
+if (process.env.SSL_INSECURE_DEV === 'true') {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ SSL_INSECURE_DEV is ignored in production. Fix system CA certs instead.');
+  } else {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    console.warn('⚠️ SSL certificate verification disabled (SSL_INSECURE_DEV=true). Local dev only.');
+  }
+}
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
+const uploadsDir = process.env.UPLOAD_DIR || (
+  process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : path.join(__dirname, 'uploads')
+);
+process.env.UPLOAD_DIR = uploadsDir;
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -43,6 +58,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+if (require.main === module) {
+  app.listen(PORT, () => {
   console.log(`\n🚀 GROW.AI Resume Analyzer running at http://localhost:${PORT}\n`);
-});
+  });
+}
+
+module.exports = app;
