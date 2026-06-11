@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="alternate icon" href="/favicon.ico">
   <title>
@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/login-page.css">
@@ -79,8 +79,59 @@
     }
 
     @media (max-width: 768px) {
+      .login-page .navbar {
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .login-page .logo-brand {
+        flex-shrink: 0;
+        min-width: 0;
+        gap: 0.45rem;
+      }
+
+      .login-page .logo-text {
+        font-size: 0.875rem;
+        white-space: nowrap;
+      }
+
       .dynamic-text-wrapper {
-        display: none;
+        flex: 1 1 auto;
+        min-width: 0;
+        order: unset;
+        margin: 0;
+        height: 1.375rem;
+        line-height: 1.375rem;
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+        mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+      }
+
+      .nav-ticker {
+        animation-duration: 32s;
+      }
+
+      .nav-ticker-text {
+        font-size: 0.5625rem;
+        letter-spacing: 0.08em;
+        padding-right: 0.75rem;
+      }
+
+      .nav-separator {
+        font-size: 0.5625rem;
+        padding: 0 0.35rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .login-page .logo-text {
+        font-size: 0.8125rem;
+      }
+
+      .nav-ticker-text {
+        font-size: 0.5rem;
+        letter-spacing: 0.06em;
       }
     }
   </style>
@@ -114,10 +165,10 @@
     <div class="hero-content">
       <h1 class="hero-headline" id="landing-headline">Grow</h1>
       <p class="hero-subtext">
-        Analyze. Match. Elevate
+        Analyze · Match · Elevate
       </p>
       <div class="hero-cta">
-        <a href="/dashboard" class="cta-button">Analyze your Resume</a>
+        <a href="/dashboard" class="cta-button">Analyze Your Resume</a>
       </div>
     </div>
   </section>
