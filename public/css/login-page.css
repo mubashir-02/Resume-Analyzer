@@ -1,5 +1,23 @@
 /* Grow landing — matches reference design, scoped to .login-page */
 
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .login-page .nav-ticker,
+  .login-page .marquee-track,
+  .login-page .nav-ticker-text {
+    animation: none !important;
+  }
+}
+
 .login-page *,
 .login-page *::before,
 .login-page *::after {
@@ -471,19 +489,34 @@
   flex: 1;
 }
 
+.login-page .nav-ticker,
+.login-page .marquee-track {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 .login-page .marquee-track {
   display: flex;
   gap: 4rem;
   animation: lp-login-marquee 20s linear infinite;
 }
 
+.login-page .video-bg {
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.login-page .navbar-glass {
+  transform: translateZ(0);
+}
+
 @keyframes lp-login-marquee {
   0% {
-    transform: translateX(0%);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 

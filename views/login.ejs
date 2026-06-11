@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8">
@@ -31,6 +31,8 @@
     .nav-ticker {
       display: inline-block;
       white-space: nowrap;
+      will-change: transform;
+      backface-visibility: hidden;
       animation: navTickerMarquee 25s linear infinite;
     }
 
@@ -70,11 +72,11 @@
 
     @keyframes navTickerMarquee {
       0% {
-        transform: translateX(0%);
+        transform: translate3d(0, 0, 0);
       }
 
       100% {
-        transform: translateX(-50%);
+        transform: translate3d(-50%, 0, 0);
       }
     }
 
@@ -194,6 +196,7 @@
     </div>
   </section>
 
+  <script src="/js/site-perf.js"></script>
   <script>
     (function () {
       var brands = ['Vortex', 'Nimbus', 'Prysma', 'Cirrus', 'Kynder', 'Halcyn'];
@@ -213,6 +216,10 @@
         marqueeTrack.innerHTML = allBrands.map(createLogoItem).join('');
       }
 
+      if (window.GrowSitePerf) {
+        window.GrowSitePerf.initVisibilityPause(['.nav-ticker', '.marquee-track', '.nav-ticker-text']);
+      }
+
       var video = document.getElementById('bgVideo');
       if (!video) return;
 
@@ -229,28 +236,35 @@
           var remaining = duration - currentTime;
           opacity = remaining / fadeDuration;
         }
-        video.style.opacity = opacity;
+        video.style.opacity = String(opacity);
       }
 
-      function animate() {
-        updateVideoOpacity();
-        requestAnimationFrame(animate);
+      function onTimeUpdate() {
+        if (!video.duration) return;
+        var currentTime = video.currentTime;
+        var duration = video.duration;
+        if (currentTime < fadeDuration || currentTime > duration - fadeDuration) {
+          updateVideoOpacity();
+        } else if (video.style.opacity !== '1') {
+          video.style.opacity = '1';
+        }
       }
+
+      video.addEventListener('timeupdate', onTimeUpdate, { passive: true });
+      video.addEventListener('seeked', updateVideoOpacity, { passive: true });
 
       video.addEventListener('ended', function () {
-        video.style.opacity = 0;
+        video.style.opacity = '0';
         setTimeout(function () {
           video.currentTime = 0;
           video.play();
         }, 100);
       });
 
-      video.addEventListener('loadedmetadata', function () {
-        animate();
-      });
+      video.addEventListener('loadedmetadata', updateVideoOpacity, { passive: true });
 
       if (video.readyState >= 2) {
-        animate();
+        updateVideoOpacity();
       }
 
     })();

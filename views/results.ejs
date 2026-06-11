@@ -57,6 +57,22 @@
     </script>
 
     <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 5.5rem;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .orb,
+            .gradient-bg {
+                animation: none !important;
+            }
+        }
+
         body {
             background-color: #0f0f0f;
             color: #fafaf9;
@@ -100,6 +116,8 @@
         .orb {
             position: absolute; border-radius: 50%; filter: blur(100px);
             opacity: 0.3; animation: float 8s ease-in-out infinite;
+            will-change: transform;
+            backface-visibility: hidden;
         }
         .orb-1 {
             width: 400px; height: 400px;
@@ -641,16 +659,7 @@
             });
         })();
 
-        // Parallax effect for orbs
-        document.addEventListener('mousemove', function(e) {
-            var orbs = document.querySelectorAll('.orb');
-            orbs.forEach(function(orb, index) {
-                var speed = (index + 1) * 15;
-                var xOffset = (window.innerWidth / 2 - e.clientX) / speed;
-                var yOffset = (window.innerHeight / 2 - e.clientY) / speed;
-                orb.style.transform = 'translate(' + xOffset + 'px, ' + yOffset + 'px)';
-            });
-        });
     </script>
+    <script src="/js/site-perf.js"></script>
 </body>
 </html>
